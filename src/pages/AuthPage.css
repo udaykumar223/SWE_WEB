@@ -83,10 +83,10 @@
     position: relative;
     display: flex;
     align-items: center;
-    border: 1px solid #333;
+    border: 1px solid var(--border-color);
     /* Darker border as seen in screenshot */
     border-radius: 12px;
-    background: #f8f9fa;
+    background: var(--bg-secondary);
     padding: 0 16px;
     height: 54px;
 }
