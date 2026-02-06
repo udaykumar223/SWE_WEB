@@ -28,23 +28,24 @@
 }
 
 .logo-sq-web {
-    width: 100%;
-    max-width: 1100px;
-    height: 140px;
+    width: 190px;
+    height: 190px;
     background: white;
-    border-radius: 20px;
+    border-radius: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    /* Mobile matches: color: Colors.black.withOpacity(0.1), blurRadius: 30, offset: Offset(0, 10) */
+    border: none;
     overflow: hidden;
 }
 
 .logo-img {
-    height: 70px;
-    width: auto;
+    height: 100%;
+    width: 100%;
     object-fit: contain;
+    padding: 10px;
 }
 
 .logo-sq-web svg {
@@ -84,11 +85,23 @@
     display: flex;
     align-items: center;
     border: 1px solid var(--border-color);
-    /* Darker border as seen in screenshot */
     border-radius: 12px;
-    background: var(--bg-secondary);
+    background: rgba(243, 244, 246, 0.5);
+    /* Light mode: surfaceContainerHighest (#F3F4F6) with 0.5 opacity */
     padding: 0 16px;
-    height: 54px;
+    height: 56px;
+    /* Mobile height */
+    transition: all 0.2s;
+}
+
+[data-theme='dark'] .input-group-web {
+    background: rgba(51, 65, 85, 0.5);
+    /* Dark mode: surfaceContainerHighest (#334155) with 0.5 opacity */
+}
+
+.input-group-web:focus-within {
+    border-color: var(--primary-blue);
+    border-width: 2px;
 }
 
 .input-icon {
@@ -128,7 +141,7 @@
     color: white;
     border: none;
     border-radius: 12px;
-    height: 54px;
+    height: 56px;
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
@@ -178,7 +191,7 @@
     background: white;
     border: 1px solid #333;
     border-radius: 12px;
-    height: 54px;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
