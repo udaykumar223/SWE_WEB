@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { HiOutlineMail, HiOutlineLockClosed, HiOutlineUser, HiEye, HiEyeOff, HiOutlineAcademicCap } from 'react-icons/hi';
 import { FcGoogle } from 'react-icons/fc';
 import './AuthPage.css';
+import appLogo from '../assets/selogo.png';
 
 const AuthPage = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -39,7 +40,7 @@ const AuthPage = () => {
                 {/* Logo Section */}
                 <div className="logo-box-web">
                     <div className="logo-sq-web">
-                        <img src="https://raw.githubusercontent.com/AdityaSuresh27/Software-Engineering-Project/main/assets/icons/app_icon.png" alt="Logo" className="logo-img"
+                        <img src={appLogo} alt="Logo" className="logo-img"
                             onError={(e) => {
                                 e.target.onerror = null;
                                 e.target.style.display = 'none';
