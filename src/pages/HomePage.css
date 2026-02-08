@@ -152,7 +152,12 @@
     padding: 24px;
     gap: 8px;
     border: 1px solid rgba(0, 0, 0, 0.05);
+    background: white;
     box-shadow: none;
+}
+
+.day-card.tomorrow {
+    background: #f1f5f9;
 }
 
 .day-card.today {
@@ -178,6 +183,11 @@
     background: rgba(255, 255, 255, 0.4);
 }
 
+.day-card.today .status-dot {
+    color: white;
+    opacity: 0.8;
+}
+
 .status-dot {
     color: var(--success-green);
     font-size: 18px;
@@ -187,17 +197,18 @@
 /* FAB */
 .fab-web {
     position: fixed;
-    bottom: 100px;
+    bottom: 40px;
     right: 40px;
     background: var(--primary-blue);
     color: white;
     border: none;
-    padding: 12px 24px;
-    border-radius: 30px;
-    font-weight: 700;
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    font-size: 24px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
     cursor: pointer;
     z-index: 1100;

@@ -119,30 +119,28 @@ const HomePage = () => {
             <section className="section">
                 <h3 className="section-title">Next 3 Days</h3>
                 <div className="next-days-row">
-                    <div className="day-card card today">
-                        <span className="day-name">Fri</span>
-                        <div className="day-dot" />
-                    </div>
-                    <div className="day-card card">
-                        <span className="day-name">Sat</span>
-                        <span className="day-number">7</span>
-                        <div className="day-status">
-                            <HiOutlineCheckCircle className="status-dot" />
-                        </div>
-                    </div>
-                    <div className="day-card card">
-                        <span className="day-name">Sun</span>
-                        <span className="day-number">8</span>
-                        <div className="day-status">
-                            <HiOutlineCheckCircle className="status-dot" />
-                        </div>
-                    </div>
+                    {[0, 1, 2].map((offset) => {
+                        const date = new Date(currentTime);
+                        date.setDate(date.getDate() + offset);
+                        const isToday = offset === 0;
+                        return (
+                            <div key={offset} className={`day-card card ${isToday ? 'today' : ''} ${offset === 1 ? 'tomorrow' : ''}`}>
+                                <span className="day-name">
+                                    {date.toLocaleDateString('en-US', { weekday: 'short' })}
+                                </span>
+                                {!isToday && <span className="day-number">{date.getDate()}</span>}
+                                <div className="day-status">
+                                    <HiOutlineCheckCircle className="status-dot" />
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             </section>
 
             {/* FAB */}
             <button className="fab-web" onClick={() => openCreateModal('class')}>
-                <HiPlus /> New Event
+                <HiPlus />
             </button>
 
             {/* Modal */}
