@@ -1,46 +1,137 @@
 .events-content {
-    padding: 16px;
+    background-color: #ffffff;
+    min-height: 100vh;
+    padding: 24px 40px 100px 40px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 24px;
 }
 
-.page-header {
+.events-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+}
+
+.page-title {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.filter-scroll {
+    overflow-x: auto;
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.filter-scroll::-webkit-scrollbar {
+    display: none;
+    /* Chrome/Safari */
 }
 
 .filter-chips {
     display: flex;
-    overflow-x: auto;
-    gap: 8px;
-    padding-bottom: 8px;
-    scrollbar-width: none;
-}
-
-.filter-chips::-webkit-scrollbar {
-    display: none;
+    gap: 12px;
+    padding: 4px;
 }
 
 .chip {
     padding: 8px 16px;
-    border-radius: 20px;
-    background: var(--bg-surface);
+    border-radius: 8px;
     border: 1px solid var(--border-color);
+    background: #fff;
     color: var(--text-secondary);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
-    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     cursor: pointer;
     transition: all 0.2s;
+    white-space: nowrap;
 }
 
 .chip.active {
+    background: var(--secondary-teal);
+    color: white;
+    border-color: var(--secondary-teal);
+}
+
+.chip-icon {
+    font-size: 16px;
+}
+
+/* Empty Events Section */
+.events-main-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 0;
+}
+
+.empty-events-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    opacity: 0.8;
+}
+
+.empty-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    background: rgba(37, 99, 235, 0.05);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-cal-icon {
+    font-size: 32px;
+    color: var(--primary-blue);
+    opacity: 0.5;
+}
+
+.empty-events-state h3 {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.empty-events-state p {
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+/* FAB Styling */
+.fab-web {
+    position: fixed;
+    bottom: 100px;
+    right: 40px;
     background: var(--primary-blue);
     color: white;
-    border-color: var(--primary-blue);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    cursor: pointer;
+    z-index: 1100;
+}
+
+.fab-web svg {
+    font-size: 18px;
+}
+
+@media (max-width: 768px) {
+    .events-content {
+        padding: 20px 20px 100px 20px;
+    }
 }
 
 .events-list {

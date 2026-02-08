@@ -197,26 +197,32 @@
 /* FAB */
 .fab-web {
     position: fixed;
-    bottom: 40px;
+    bottom: 100px;
     right: 40px;
     background: var(--primary-blue);
     color: white;
     border: none;
-    width: 56px;
-    height: 56px;
-    border-radius: 12px;
-    font-size: 24px;
+    padding: 16px 36px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    gap: 12px;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
     cursor: pointer;
     z-index: 1100;
-    transition: transform 0.2s;
+    transition: all 0.2s;
 }
 
 .fab-web:hover {
-    transform: scale(1.05);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(37, 99, 235, 0.5);
+}
+
+.fab-web svg {
+    font-size: 22px;
 }
 
 @media (max-width: 1024px) {

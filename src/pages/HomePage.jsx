@@ -140,7 +140,7 @@ const HomePage = () => {
 
             {/* FAB */}
             <button className="fab-web" onClick={() => openCreateModal('class')}>
-                <HiPlus />
+                <HiPlus /> New Event
             </button>
 
             {/* Modal */}

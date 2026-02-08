@@ -1,78 +1,75 @@
 import { useState } from 'react';
-import { HiOutlineSortAscending, HiOutlineCheckCircle, HiOutlineClock, HiPlus } from 'react-icons/hi';
+import {
+    HiPlus,
+    HiOutlineFilter,
+    HiOutlineAcademicCap,
+    HiOutlineClipboardList,
+    HiOutlineInformationCircle,
+    HiOutlineUsers,
+    HiOutlineBookmark,
+    HiOutlineCalendar,
+    HiOutlineViewGrid
+} from 'react-icons/hi';
 import './EventsPage.css';
+import AddEventModal from '../components/AddEventModal';
 
 const EventsPage = () => {
     const [filter, setFilter] = useState('all');
-    const [sortBy, setSortBy] = useState('date');
-    const filters = ['all', 'class', 'exam', 'assignment', 'meeting', 'personal', 'other'];
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const mockEvents = [
-        { id: 1, title: 'Advanced Software Engineering', type: 'class', time: '10:00 AM', status: 'pending', date: 'Today' },
-        { id: 2, title: 'Final Project Submission', type: 'assignment', time: '11:59 PM', status: 'pending', date: 'Tomorrow' },
-        { id: 3, title: 'Security Quiz', type: 'exam', time: '02:00 PM', status: 'pending', date: 'Today' },
+    const categories = [
+        { id: 'all', label: 'All', icon: HiOutlineViewGrid },
+        { id: 'class', label: 'Class', icon: HiOutlineAcademicCap },
+        { id: 'exam', label: 'Exam', icon: HiOutlineInformationCircle },
+        { id: 'assignment', label: 'Assignment', icon: HiOutlineClipboardList },
+        { id: 'meeting', label: 'Meeting', icon: HiOutlineUsers },
+        { id: 'personal', label: 'Personal', icon: HiOutlineBookmark },
+        { id: 'other', label: 'Other', icon: HiOutlineCalendar },
     ];
-
-    const getIconColor = (type) => {
-        switch (type) {
-            case 'class': return 'var(--class-blue)';
-            case 'assignment': return 'var(--assignment-purple)';
-            case 'exam': return 'var(--exam-orange)';
-            case 'meeting': return 'var(--meeting-teal)';
-            case 'personal': return 'var(--personal-green)';
-            default: return 'var(--other-gray)';
-        }
-    };
 
     return (
         <div className="events-content fade-in">
-            <header className="page-header">
-                <h2>Events</h2>
-                <div className="header-actions">
-                    <button className="icon-btn">
-                        <HiOutlineSortAscending />
-                    </button>
-                </div>
+            <header className="events-header">
+                <h1 className="page-title">Events</h1>
+                <button className="icon-btn header-action">
+                    <HiOutlineFilter />
+                </button>
             </header>
 
-            <div className="filter-chips">
-                {filters.map((f) => (
-                    <button
-                        key={f}
-                        className={`chip ${filter === f ? 'active' : ''}`}
-                        onClick={() => setFilter(f)}
-                    >
-                        {f.charAt(0).toUpperCase() + f.slice(1)}
-                    </button>
-                ))}
+            <div className="filter-scroll">
+                <div className="filter-chips">
+                    {categories.map((cat) => (
+                        <button
+                            key={cat.id}
+                            className={`chip ${filter === cat.id ? 'active' : ''}`}
+                            onClick={() => setFilter(cat.id)}
+                        >
+                            <cat.icon className="chip-icon" />
+                            {cat.label}
+                        </button>
+                    ))}
+                </div>
             </div>
 
-            <div className="events-list">
-                {mockEvents.map((event) => (
-                    <div key={event.id} className="event-card card">
-                        <div className="event-icon-box" style={{ background: `rgba(${getIconColor(event.type)}, 0.08)`, color: getIconColor(event.type) }}>
-                            <HiOutlineClock />
-                        </div>
-                        <div className="event-details">
-                            <h4>{event.title}</h4>
-                            <div className="event-meta">
-                                <span className="event-type" style={{ color: getIconColor(event.type) }}>
-                                    {event.type.charAt(0).toUpperCase() + event.type.slice(1)}
-                                </span>
-                                <span className="dot">•</span>
-                                <span className="event-time">{event.time}</span>
-                            </div>
-                        </div>
-                        <div className="event-status">
-                            <HiOutlineCheckCircle className="status-icon" />
-                        </div>
+            <div className="events-main-area">
+                <div className="empty-events-state">
+                    <div className="empty-icon-wrapper">
+                        <HiOutlineCalendar className="empty-cal-icon" />
                     </div>
-                ))}
+                    <h3>No events yet</h3>
+                    <p>Tap + to create your first event</p>
+                </div>
             </div>
 
-            <button className="fab">
+            <button className="fab-web" onClick={() => setIsModalOpen(true)}>
                 <HiPlus /> New Event
             </button>
+
+            <AddEventModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                initialType={filter === 'all' ? 'class' : filter}
+            />
         </div>
     );
 };
