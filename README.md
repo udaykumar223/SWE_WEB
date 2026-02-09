@@ -12,11 +12,11 @@ ClassFlow is a modern responsive academic management dashboard built with React 
 - **Attendance Tracking**: Monitor academic progress and attendance status.
 
 ## Tech Stack
-- **Framework**: React 18
+
+- **Framework**: React 19
 - **Build Tool**: Vite
 - **Styling**: Vanilla CSS (Custom UI System)
 - **Icons**: Lucide React
-- **Animations**: Framer Motion
 - **State Management**: React Context / Hooks
 - **HTTP Client**: Axios
 
