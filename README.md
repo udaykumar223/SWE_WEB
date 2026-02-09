@@ -1,10 +1,10 @@
 # ClassFlow - Academic Management Dashboard
 
-ClassFlow is a modern responsive academic management dashboard built with React and Vite. It provides features for tracking attendance, managing events, viewing timetables, and more.
+ClassFlow is a modern responsive academic management dashboard built with React and Vite. It provides features for tracking attendance, managing events, viewing timetables, adding tasks etc.
 
 ## Features
 
-- **Modern UI/UX**: Premium design with smooth animations and transitions.
+- **Modern UI/UX**: Simple design with smooth animations and transitions.
 - **Dark Mode Support**: Dynamic theme switching for better user experience.
 - **Responsive Layout**: Works seamlessly across mobile, tablet, and desktop.
 - **Academic Dashboard**: Overview of attendance, upcoming events, and deadlines.
@@ -12,7 +12,6 @@ ClassFlow is a modern responsive academic management dashboard built with React 
 - **Attendance Tracking**: Monitor academic progress and attendance status.
 
 ## Tech Stack
-
 - **Framework**: React 18
 - **Build Tool**: Vite
 - **Styling**: Vanilla CSS (Custom UI System)
@@ -50,4 +49,3 @@ src/
 ├── services/       # API and utility services
 └── utils/          # Helper functions logic
 ```
-
