@@ -1,18 +1,25 @@
 .attendance-content {
-    padding: 16px;
+    padding: 24px 40px 140px 40px;
+    max-width: 800px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
+
 .page-header-alt {
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 12px;
+    position: relative;
     margin-top: 8px;
+    padding: 10px 0;
 }
 
 .back-btn-ghost {
+    position: absolute;
+    left: 0;
     background: none;
     border: none;
     font-size: 24px;
@@ -21,6 +28,7 @@
     display: flex;
     align-items: center;
 }
+
 
 .overall-stats-card {
     background: linear-gradient(135deg, var(--primary-blue), #1e40af);

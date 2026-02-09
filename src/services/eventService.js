@@ -1,33 +1,5 @@
 // Mock Event Service for Frontend-only Demo
-const MOCK_EVENTS = [
-    {
-        _id: '1',
-        title: 'Complete Math Assignment',
-        type: 'assignment',
-        priority: 'high',
-        date: new Date().toISOString(),
-        completed: false,
-        category: 'Education'
-    },
-    {
-        _id: '2',
-        title: 'Review Physics Notes',
-        type: 'revision',
-        priority: 'medium',
-        date: new Date().toISOString(),
-        completed: true,
-        category: 'Education'
-    },
-    {
-        _id: '3',
-        title: 'Project Deadline',
-        type: 'deadline',
-        priority: 'high',
-        date: new Date(Date.now() + 86400000).toISOString(),
-        completed: false,
-        category: 'Project'
-    }
-];
+let MOCK_EVENTS = [];
 
 export const eventService = {
     // Get all events
@@ -52,6 +24,7 @@ export const eventService = {
     createEvent: async (eventData) => {
         await new Promise(resolve => setTimeout(resolve, 500));
         const newEvent = { ...eventData, _id: Date.now().toString() };
+        MOCK_EVENTS.push(newEvent);
         return {
             success: true,
             data: newEvent
@@ -60,6 +33,7 @@ export const eventService = {
 
     // Update event
     updateEvent: async (id, eventData) => {
+        MOCK_EVENTS = MOCK_EVENTS.map(e => e._id === id ? { ...e, ...eventData } : e);
         return {
             success: true,
             data: { ...eventData, _id: id }
@@ -68,6 +42,7 @@ export const eventService = {
 
     // Delete event
     deleteEvent: async (id) => {
+        MOCK_EVENTS = MOCK_EVENTS.filter(e => e._id !== id);
         return {
             success: true,
             message: 'Event deleted'
@@ -76,6 +51,7 @@ export const eventService = {
 
     // Toggle completion
     toggleComplete: async (id) => {
+        MOCK_EVENTS = MOCK_EVENTS.map(e => e._id === id ? { ...e, completed: !e.completed } : e);
         return {
             success: true,
             message: 'Status updated'
@@ -84,9 +60,11 @@ export const eventService = {
 
     // Get events for a specific day
     getEventsByDay: async (date) => {
+        const dateStr = date instanceof Date ? date.toISOString().split('T')[0] : date.split('T')[0];
+        const filtered = MOCK_EVENTS.filter(e => e.date.split('T')[0] === dateStr);
         return {
             success: true,
-            data: MOCK_EVENTS
+            data: filtered
         };
     },
 
@@ -100,23 +78,29 @@ export const eventService = {
 
     // Get today's stats
     getTodayStats: async () => {
+        const today = new Date().toISOString().split('T')[0];
+        const todayEvents = MOCK_EVENTS.filter(e => e.date.split('T')[0] === today);
+
         return {
             success: true,
             data: {
-                total: 5,
-                completed: 2,
-                pending: 3,
-                attendance: '85%',
-                upcomingCount: 2
+                total: todayEvents.length,
+                completed: todayEvents.filter(e => e.completed).length,
+                pending: todayEvents.filter(e => !e.completed).length,
+                attendance: '0%',
+                upcomingCount: todayEvents.length
             }
         };
     },
 
     // Get counts for a day
     getCountsForDay: async (date) => {
+        const dateStr = date instanceof Date ? date.toISOString().split('T')[0] : date.split('T')[0];
+        const count = MOCK_EVENTS.filter(e => e.date.split('T')[0] === dateStr).length;
         return {
             success: true,
-            data: { count: 3 }
+            data: { count }
         };
     },
 };
+

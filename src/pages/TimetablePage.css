@@ -120,3 +120,16 @@
     font-size: 13px;
     color: var(--text-secondary);
 }
+
+.empty-schedule-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: var(--text-tertiary);
+    font-size: 15px;
+    background: white;
+    border-radius: 16px;
+    border: 1px dashed var(--border-color);
+}

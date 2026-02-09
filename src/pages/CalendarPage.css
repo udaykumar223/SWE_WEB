@@ -12,8 +12,10 @@
 
 .calendar-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    position: relative;
+    padding: 10px 0;
 }
 
 .page-title {
@@ -21,6 +23,12 @@
     font-weight: 700;
     color: #1a202c;
 }
+
+.header-action {
+    position: absolute;
+    right: 0;
+}
+
 
 .calendar-container {
     width: 100%;
@@ -31,9 +39,9 @@
 
 .calendar-wrapper {
     width: 100%;
-    max-width: 1400px;
+    max-width: 800px;
     background: #ffffff;
-    padding: 50px;
+    padding: 24px;
     border-radius: 20px;
     box-shadow: 0 4px 25px rgba(0, 0, 0, 0.03);
     border: 1px solid rgba(0, 0, 0, 0.02);
@@ -51,33 +59,33 @@
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    margin-bottom: 40px !important;
-    gap: 32px;
+    margin-bottom: 24px !important;
+    gap: 16px;
 }
 
 .react-calendar__navigation button {
     color: #1e293b !important;
-    font-size: 16px !important;
+    font-size: 14px !important;
     font-weight: 700 !important;
     background: none !important;
-    min-width: 32px !important;
+    min-width: 28px !important;
 }
 
 .react-calendar__navigation__label {
     flex-grow: 0 !important;
-    font-size: 22px !important;
+    font-size: 18px !important;
     pointer-events: none;
     color: #1a202c !important;
 }
 
 .react-calendar__month-view__weekdays {
     text-align: center !important;
-    margin-bottom: 40px !important;
+    margin-bottom: 16px !important;
 }
 
 .react-calendar__month-view__weekdays__weekday {
     color: #94a3b8 !important;
-    font-size: 15px !important;
+    font-size: 13px !important;
     font-weight: 500 !important;
     text-transform: capitalize !important;
 }
@@ -97,15 +105,15 @@
 }
 
 .react-calendar__tile {
-    height: 100px !important;
+    height: 60px !important;
     /* Expanded height */
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    font-size: 17px !important;
+    font-size: 15px !important;
     font-weight: 500 !important;
     color: #64748b !important;
-    border-radius: 16px !important;
+    border-radius: 12px !important;
     transition: all 0.2s !important;
     background: none !important;
 }
@@ -120,11 +128,10 @@
     background: var(--primary-blue) !important;
     color: white !important;
     font-weight: 700 !important;
-    border-radius: 60px !important;
-    /* Pill shape for selection */
-    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.4) !important;
-    transform: scale(0.85);
-    /* Make it look like a pill in the row */
+    border-radius: 50% !important;
+    /* Circular selection */
+    box-shadow: 0 8px 15px rgba(37, 99, 235, 0.3) !important;
+    transform: scale(0.75);
 }
 
 /* Empty Events Section */
@@ -133,7 +140,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 80px;
+    margin-top: 40px;
     gap: 16px;
     opacity: 0.8;
 }

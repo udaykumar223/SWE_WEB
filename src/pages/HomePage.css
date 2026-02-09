@@ -150,49 +150,57 @@
     align-items: center;
     justify-content: center;
     padding: 24px;
-    gap: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    background: white;
+    gap: 12px;
+    border: 1.5px solid var(--border-color);
+    background: var(--bg-surface);
     box-shadow: none;
+    border-radius: 12px;
 }
 
-.day-card.tomorrow {
-    background: #f1f5f9;
-}
-
-.day-card.today {
-    background: var(--primary-blue) !important;
-    color: white;
-    border: none;
+.day-card.active {
+    background: var(--bg-surface);
 }
 
 .day-name {
-    font-size: 14px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-tertiary);
 }
 
-.day-number {
-    font-size: 24px;
+.day-number-circle {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
     font-weight: 700;
-}
-
-.day-dot {
-    width: 6px;
-    height: 6px;
+    color: var(--text-primary);
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.4);
 }
 
-.day-card.today .status-dot {
+.day-number-circle.today {
+    background: var(--primary-blue);
     color: white;
-    opacity: 0.8;
 }
 
-.status-dot {
-    color: var(--success-green);
-    font-size: 18px;
-    opacity: 0.6;
+.event-chip {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
 }
+
+.event-chip.has-events {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary-blue);
+}
+
+.event-chip.no-events {
+    background: #f1f5f9;
+    color: var(--text-tertiary);
+}
+
 
 /* FAB */
 .fab-web {

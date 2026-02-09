@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     HiOutlineX,
     HiOutlineAcademicCap,
@@ -12,26 +12,106 @@ import {
     HiOutlineUsers,
     HiOutlineQuestionMarkCircle,
     HiOutlineEmojiHappy,
-    HiOutlineCheckCircle
+    HiOutlineCheckCircle,
+    HiOutlineStar,
+    HiOutlineBell,
+    HiOutlineMicrophone,
+    HiOutlinePlus,
+    HiChevronDown,
+    HiStar
 } from 'react-icons/hi';
 import './AddEventModal.css';
+import { eventService } from '../services/eventService';
 
 const AddEventModal = ({ isOpen, onClose, initialType = 'class' }) => {
     const [activeTab, setActiveTab] = useState('Details');
     const [classification, setClassification] = useState(initialType);
+    const [title, setTitle] = useState('');
+    const [category, setCategory] = useState('No category');
+    const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 16));
+    const [endDate, setEndDate] = useState(new Date(Date.now() + 3600000).toISOString().slice(0, 16));
+    const [location, setLocation] = useState('');
+    const [notes, setNotes] = useState('');
+    const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+
+    // Advanced tab state
+    const [priority, setPriority] = useState('Medium');
+    const [isImportant, setIsImportant] = useState(false);
+    const [reminders, setReminders] = useState([]);
+
+    useEffect(() => {
+        setClassification(initialType);
+    }, [initialType, isOpen]);
 
     if (!isOpen) return null;
 
     const classifications = [
-        { id: 'class', label: 'Class', icon: HiOutlineAcademicCap, color: 'var(--class-blue)' },
-        { id: 'exam', label: 'Exam', icon: HiOutlineInformationCircle, color: 'var(--exam-orange)' },
-        { id: 'assignment', label: 'Assignment', icon: HiOutlineClipboardList, color: 'var(--assignment-purple)' },
-        { id: 'meeting', label: 'Meeting', icon: HiOutlineUsers, color: 'var(--meeting-teal)' },
-        { id: 'personal', label: 'Personal', icon: HiOutlineEmojiHappy, color: 'var(--personal-green)' },
-        { id: 'other', label: 'Other', icon: HiOutlineQuestionMarkCircle, color: 'var(--other-gray)' },
+        { id: 'class', label: 'Class', icon: HiOutlineAcademicCap, color: 'var(--class-blue)', bg: 'rgba(59, 130, 246, 0.1)' },
+        { id: 'exam', label: 'Exam', icon: HiOutlineInformationCircle, color: 'var(--exam-orange)', bg: 'rgba(245, 158, 11, 0.1)' },
+        { id: 'assignment', label: 'Assignment', icon: HiOutlineClipboardList, color: 'var(--assignment-purple)', bg: 'rgba(139, 92, 246, 0.1)' },
+        { id: 'meeting', label: 'Meeting', icon: HiOutlineUsers, color: 'var(--meeting-teal)', bg: 'rgba(20, 184, 166, 0.1)' },
+        { id: 'personal', label: 'Personal', icon: HiOutlineEmojiHappy, color: 'var(--personal-green)', bg: 'rgba(16, 185, 129, 0.1)' },
+        { id: 'other', label: 'Other', icon: HiOutlineQuestionMarkCircle, color: 'var(--other-gray)', bg: 'rgba(107, 114, 128, 0.1)' },
     ];
 
+
+    const categories = ['No category', 'General', 'Mathematics', 'Science', 'Language', 'Social Studies'];
+    const priorities = ['Low', 'Medium', 'High', 'Critical'];
     const tabs = ['Details', 'Advanced', 'Notes'];
+
+    const handleCreate = async () => {
+        if (!title.trim()) return;
+
+        const eventData = {
+            title,
+            type: classification,
+            category,
+            startDate,
+            endDate,
+            location,
+            notes,
+            priority: priority.toLowerCase(),
+            important: isImportant,
+            reminders,
+            date: new Date(startDate).toISOString()
+        };
+
+        try {
+            const response = await eventService.createEvent(eventData);
+            if (response.success) {
+                onClose();
+                // Reset form
+                setTitle('');
+                setCategory('No category');
+                setPriority('Medium');
+                setIsImportant(false);
+            }
+        } catch (error) {
+            console.error('Failed to create event:', error);
+        }
+    };
+
+
+    const getClassificationIcon = () => {
+        const cls = classifications.find(c => c.id === classification);
+        return cls ? cls.icon : HiOutlineAcademicCap;
+    };
+
+    const formatDateForDisplay = (isoString) => {
+        const date = new Date(isoString);
+        return date.toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        }) + ' • ' + date.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+    };
+
+    const ClassificationIcon = getClassificationIcon();
 
     return (
         <div className="modal-overlay" onClick={onClose}>
@@ -40,7 +120,7 @@ const AddEventModal = ({ isOpen, onClose, initialType = 'class' }) => {
                 <header className="modal-header">
                     <div className="header-left">
                         <div className="header-icon-box">
-                            <HiOutlineAcademicCap />
+                            <ClassificationIcon />
                         </div>
                         <div className="header-text">
                             <h2>Create Event</h2>
@@ -72,7 +152,12 @@ const AddEventModal = ({ isOpen, onClose, initialType = 'class' }) => {
                             <div className="input-field">
                                 <label className="field-label-float">
                                     <HiOutlinePencilAlt className="field-icon" />
-                                    <input type="text" placeholder="Event Title" />
+                                    <input
+                                        type="text"
+                                        placeholder="Event Title"
+                                        value={title}
+                                        onChange={(e) => setTitle(e.target.value)}
+                                    />
                                 </label>
                             </div>
 
@@ -88,8 +173,10 @@ const AddEventModal = ({ isOpen, onClose, initialType = 'class' }) => {
                                                 className={`type-chip ${isActive ? 'active' : ''}`}
                                                 style={{
                                                     '--chip-color': type.color,
+                                                    '--chip-bg': type.bg,
                                                     borderColor: isActive ? type.color : 'var(--border-color)',
-                                                    background: isActive ? `rgba(${isActive ? '59, 130, 246' : '0, 0, 0'}, 0.1)` : 'transparent'
+                                                    background: isActive ? type.bg : 'transparent',
+                                                    color: isActive ? type.color : 'var(--text-secondary)'
                                                 }}
                                                 onClick={() => setClassification(type.id)}
                                             >
@@ -102,16 +189,35 @@ const AddEventModal = ({ isOpen, onClose, initialType = 'class' }) => {
                             </div>
 
                             <div className="input-field">
-                                <label className="field-label-float">
-                                    <HiOutlineFolder className="field-icon" />
-                                    <div className="dropdown-mock">
-                                        <span>Category (Optional)</span>
-                                        <HiOutlineX className="dropdown-arrow" style={{ transform: 'rotate(90deg)' }} />
+                                <span className="field-tag">Category (Optional)</span>
+                                <div className="custom-dropdown">
+                                    <div
+                                        className="field-label-float dropdown-trigger"
+                                        onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+                                    >
+                                        <HiOutlineFolder className="field-icon" />
+                                        <div className="dropdown-mock">
+                                            <span>{category}</span>
+                                            <HiChevronDown className={`dropdown-arrow ${isCategoryOpen ? 'open' : ''}`} />
+                                        </div>
                                     </div>
-                                    <select className="hidden-select">
-                                        <option>No category</option>
-                                    </select>
-                                </label>
+                                    {isCategoryOpen && (
+                                        <div className="dropdown-options fade-in">
+                                            {categories.map(cat => (
+                                                <div
+                                                    key={cat}
+                                                    className={`option-item ${category === cat ? 'selected' : ''}`}
+                                                    onClick={() => {
+                                                        setCategory(cat);
+                                                        setIsCategoryOpen(false);
+                                                    }}
+                                                >
+                                                    {cat}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="date-time-group">
@@ -119,14 +225,22 @@ const AddEventModal = ({ isOpen, onClose, initialType = 'class' }) => {
                                     <span className="field-tag">Start Date/Time</span>
                                     <label className="field-label-float">
                                         <HiOutlineCalendar className="field-icon" />
-                                        <input type="text" defaultValue="Fri, Feb 6, 2026 • 9:12 PM" />
+                                        <input
+                                            type="datetime-local"
+                                            value={startDate}
+                                            onChange={(e) => setStartDate(e.target.value)}
+                                        />
                                     </label>
                                 </div>
                                 <div className="input-field">
                                     <span className="field-tag">End Date/Time</span>
                                     <label className="field-label-float">
                                         <HiOutlineCalendar className="field-icon" />
-                                        <input type="text" defaultValue="Fri, Feb 6, 2026 • 10:12 PM" />
+                                        <input
+                                            type="datetime-local"
+                                            value={endDate}
+                                            onChange={(e) => setEndDate(e.target.value)}
+                                        />
                                     </label>
                                 </div>
                             </div>
@@ -134,15 +248,91 @@ const AddEventModal = ({ isOpen, onClose, initialType = 'class' }) => {
                             <div className="input-field">
                                 <label className="field-label-float">
                                     <HiOutlineLocationMarker className="field-icon" />
-                                    <input type="text" placeholder="Location (Optional)" />
+                                    <input
+                                        type="text"
+                                        placeholder="Location (Optional)"
+                                        value={location}
+                                        onChange={(e) => setLocation(e.target.value)}
+                                    />
                                 </label>
                             </div>
 
                             <div className="input-field">
-                                <label className="field-label-float textarea-field">
+                                <label className="field-label-last textarea-field">
                                     <HiOutlineMenuAlt2 className="field-icon" />
-                                    <textarea placeholder="Notes (Optional)" rows="4"></textarea>
+                                    <textarea
+                                        placeholder="Notes (Optional)"
+                                        rows="3"
+                                        value={notes}
+                                        onChange={(e) => setNotes(e.target.value)}
+                                    ></textarea>
                                 </label>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'Advanced' && (
+                        <div className="form-section fade-in">
+                            <div className="priority-section">
+                                <span className="label-text">Priority Level</span>
+                                <div className="priority-chips">
+                                    {priorities.map(p => (
+                                        <button
+                                            key={p}
+                                            className={`priority-chip ${priority === p ? 'active' : ''} ${p.toLowerCase()}`}
+                                            onClick={() => setPriority(p)}
+                                        >
+                                            {p}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="important-toggle-card">
+                                <div className="toggle-info">
+                                    <div className="toggle-icon-bg">
+                                        <HiOutlineStar />
+                                    </div>
+                                    <div className="toggle-text">
+                                        <h4>Mark as Important</h4>
+                                        <p>Highlight this event with a star</p>
+                                    </div>
+                                </div>
+                                <label className="switch">
+                                    <input
+                                        type="checkbox"
+                                        checked={isImportant}
+                                        onChange={(e) => setIsImportant(e.target.checked)}
+                                    />
+                                    <span className="slider round"></span>
+                                </label>
+                            </div>
+
+                            <div className="reminders-section">
+                                <div className="reminders-header">
+                                    <span className="label-text">Reminders ({reminders.length})</span>
+                                    <button className="add-reminder-btn">
+                                        <HiOutlineBell /> Add Reminder
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'Notes' && (
+                        <div className="form-section fade-in">
+                            <div className="voice-notes-header">
+                                <span className="label-text">Voice Notes (0)</span>
+                                <button className="record-btn">
+                                    <HiOutlineMicrophone /> Record
+                                </button>
+                            </div>
+                            <div className="voice-notes-empty">
+                                <div className="empty-mic-icon">
+                                    <HiOutlineMicrophone />
+                                </div>
+                                <h4>No voice notes yet</h4>
+                                <p>Tap "Record" to add a voice note</p>
                             </div>
                         </div>
                     )}
@@ -150,7 +340,7 @@ const AddEventModal = ({ isOpen, onClose, initialType = 'class' }) => {
 
                 {/* Footer */}
                 <footer className="modal-footer">
-                    <button className="btn-submit" onClick={onClose}>
+                    <button className="btn-submit" onClick={handleCreate}>
                         <HiOutlineCheckCircle /> Create Event
                     </button>
                 </footer>
@@ -160,3 +350,4 @@ const AddEventModal = ({ isOpen, onClose, initialType = 'class' }) => {
 };
 
 export default AddEventModal;
+

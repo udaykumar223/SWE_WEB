@@ -9,10 +9,7 @@ const TimetablePage = () => {
     const fullDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     const [selectedDayIndex, setSelectedDayIndex] = useState(new Date().getDay() === 0 ? 6 : new Date().getDay() - 1);
 
-    const mockSchedule = [
-        { id: 1, subject: 'Advanced Software Engineering', code: 'CSE401', time: '10:00 - 11:30', room: 'Room 302', professor: 'Dr. Aditya' },
-        { id: 2, subject: 'Network Security', code: 'CSE403', time: '12:00 - 01:30', room: 'Lab 1', professor: 'Prof. Suresh' },
-    ];
+    const mockSchedule = [];
 
     return (
         <div className="timetable-content fade-in">
@@ -41,24 +38,31 @@ const TimetablePage = () => {
                 <h4 className="day-title">{fullDays[selectedDayIndex]}</h4>
 
                 <div className="schedule-list">
-                    {mockSchedule.map((item) => (
-                        <div key={item.id} className="schedule-card card">
-                            <div className="schedule-time-line">
-                                <HiOutlineClock className="time-icon" />
-                                <span>{item.time}</span>
-                            </div>
-                            <div className="schedule-info">
-                                <h3>{item.subject}</h3>
-                                <p className="subject-code">{item.code} • {item.professor}</p>
-                                <div className="schedule-location">
-                                    <HiOutlineLocationMarker />
-                                    <span>{item.room}</span>
+                    {mockSchedule.length > 0 ? (
+                        mockSchedule.map((item) => (
+                            <div key={item.id} className="schedule-card card">
+                                <div className="schedule-time-line">
+                                    <HiOutlineClock className="time-icon" />
+                                    <span>{item.time}</span>
+                                </div>
+                                <div className="schedule-info">
+                                    <h3>{item.subject}</h3>
+                                    <p className="subject-code">{item.code} • {item.professor}</p>
+                                    <div className="schedule-location">
+                                        <HiOutlineLocationMarker />
+                                        <span>{item.room}</span>
+                                    </div>
                                 </div>
                             </div>
+                        ))
+                    ) : (
+                        <div className="empty-schedule-state">
+                            <p>No classes scheduled for this day</p>
                         </div>
-                    ))}
+                    )}
                 </div>
             </div>
+
 
             <button className="fab">
                 <HiPlus /> Add Slot

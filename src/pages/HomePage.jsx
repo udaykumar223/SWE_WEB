@@ -11,20 +11,41 @@ import {
     HiPlus,
     HiOutlineCheckCircle,
     HiOutlineClock,
-    HiOutlineBookOpen
+    HiOutlineBookOpen,
+    HiOutlineEmojiHappy,
+    HiOutlineQuestionMarkCircle
 } from 'react-icons/hi';
 import './HomePage.css';
+import { useNavigate } from 'react-router-dom';
 import AddEventModal from '../components/AddEventModal';
+import { eventService } from '../services/eventService';
 
 const HomePage = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [currentTime, setCurrentTime] = useState(new Date());
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalType, setModalType] = useState('class');
+    const [dayStats, setDayStats] = useState({});
 
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 60000);
         return () => clearInterval(timer);
+    }, []);
+
+    useEffect(() => {
+        const fetchDayStats = async () => {
+            const stats = {};
+            for (let i = 0; i < 3; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() + i);
+                const dateString = date.toISOString().split('T')[0];
+                const response = await eventService.getCountsForDay(date);
+                stats[dateString] = response.data.count;
+            }
+            setDayStats(stats);
+        };
+        fetchDayStats();
     }, []);
 
     const formatDate = (date) => {
@@ -58,6 +79,14 @@ const HomePage = () => {
         { id: 'meeting', label: 'Meeting', icon: HiOutlineUsers, color: 'var(--secondary-teal)', bg: 'rgba(20, 184, 166, 0.05)' },
     ];
 
+    const handleActionClick = (action) => {
+        if (action.id === 'timetable' || action.id === 'attendance') {
+            navigate(`/${action.id}`);
+        } else {
+            openCreateModal(action.id);
+        }
+    };
+
     const openCreateModal = (type = 'class') => {
         setModalType(type);
         setIsModalOpen(true);
@@ -84,7 +113,7 @@ const HomePage = () => {
                         <div key={index} className="overview-card card" style={{ background: stat.bg }}>
                             <stat.icon className="stat-icon" style={{ color: stat.color }} />
                             <div className="stat-info">
-                                <span className="stat-count" style={{ color: stat.color }}>{stat.count}</span>
+                                <span className="stat-count" style={{ color: stat.count }}>{stat.count}</span>
                                 <span className="stat-label">{stat.label}</span>
                             </div>
                         </div>
@@ -97,13 +126,14 @@ const HomePage = () => {
                 <h3 className="section-title">Quick Actions</h3>
                 <div className="quick-actions-grid">
                     {quickActions.map((action, index) => (
-                        <div key={index} className="action-card card" style={{ background: action.bg }} onClick={() => openCreateModal(action.id)}>
+                        <div key={index} className="action-card card" style={{ background: action.bg }} onClick={() => handleActionClick(action)}>
                             <action.icon className="action-icon" style={{ color: action.color }} />
                             <span className="action-label" style={{ color: action.color }}>{action.label}</span>
                         </div>
                     ))}
                 </div>
             </section>
+
 
             {/* Upcoming Events */}
             <section className="section">
@@ -123,20 +153,26 @@ const HomePage = () => {
                         const date = new Date(currentTime);
                         date.setDate(date.getDate() + offset);
                         const isToday = offset === 0;
+                        const dateString = date.toISOString().split('T')[0];
+                        const count = dayStats[dateString] || 0;
+
                         return (
-                            <div key={offset} className={`day-card card ${isToday ? 'today' : ''} ${offset === 1 ? 'tomorrow' : ''}`}>
+                            <div key={offset} className={`day-card card ${isToday ? 'active' : ''}`}>
                                 <span className="day-name">
                                     {date.toLocaleDateString('en-US', { weekday: 'short' })}
                                 </span>
-                                {!isToday && <span className="day-number">{date.getDate()}</span>}
-                                <div className="day-status">
-                                    <HiOutlineCheckCircle className="status-dot" />
+                                <div className={`day-number-circle ${isToday ? 'today' : ''}`}>
+                                    {date.getDate()}
+                                </div>
+                                <div className={`event-chip ${count > 0 ? 'has-events' : 'no-events'}`}>
+                                    {count} {count === 1 ? 'event' : 'events'}
                                 </div>
                             </div>
                         );
                     })}
                 </div>
             </section>
+
 
             {/* FAB */}
             <button className="fab-web" onClick={() => openCreateModal('class')}>
