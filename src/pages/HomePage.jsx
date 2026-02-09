@@ -33,20 +33,7 @@ const HomePage = () => {
         return () => clearInterval(timer);
     }, []);
 
-    useEffect(() => {
-        const fetchDayStats = async () => {
-            const stats = {};
-            for (let i = 0; i < 3; i++) {
-                const date = new Date();
-                date.setDate(date.getDate() + i);
-                const dateString = date.toISOString().split('T')[0];
-                const response = await eventService.getCountsForDay(date);
-                stats[dateString] = response.data.count;
-            }
-            setDayStats(stats);
-        };
-        fetchDayStats();
-    }, []);
+
 
     const formatDate = (date) => {
         return date.toLocaleDateString('en-US', {
@@ -71,41 +58,47 @@ const HomePage = () => {
     });
     const [upcomingEvents, setUpcomingEvents] = useState([]);
 
-    useEffect(() => {
-        // Fetch Today's Stats
-        const fetchStats = async () => {
-            try {
-                const response = await eventService.getTodayStats();
-                if (response.success) {
-                    // response.data has total, completed, pending, etc.
-                    // We need breakdown by type. 
-                    // Let's manually fetch today's events and count for now or update backend/service to return breakdown.
-                    // For speed: Fetch all events for today and count.
-                    const today = new Date();
-                    const eventsRes = await eventService.getEventsByDay(today);
-                    if (eventsRes.success) {
-                        const events = eventsRes.data;
-                        setStats({
-                            classes: events.filter(e => e.type === 'class').length,
-                            tasks: events.filter(e => e.type === 'assignment' || e.type === 'deadline').length,
-                            exams: events.filter(e => e.type === 'exam').length,
-                            meetings: events.filter(e => e.type === 'meeting').length
-                        });
+    const fetchStats = async () => {
+        try {
+            // Fetch Today's Stats
+            const today = new Date();
+            const eventsRes = await eventService.getEventsByDay(today);
+            if (eventsRes.success) {
+                const events = eventsRes.data;
+                setStats({
+                    classes: events.filter(e => e.type === 'class').length,
+                    tasks: events.filter(e => e.type === 'assignment' || e.type === 'deadline').length,
+                    exams: events.filter(e => e.type === 'exam').length,
+                    meetings: events.filter(e => e.type === 'meeting').length
+                });
 
-                        // Top 3 upcoming events for today
-                        const upcoming = events
-                            .filter(e => new Date(e.startDate) > new Date())
-                            .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
-                            .slice(0, 3);
-                        setUpcomingEvents(upcoming);
-                    }
-                }
-            } catch (error) {
-                console.error("Failed to fetch home stats", error);
+                // Top 3 upcoming events for today
+                const upcoming = events
+                    .filter(e => new Date(e.startDate) > new Date())
+                    .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+                    .slice(0, 3);
+                setUpcomingEvents(upcoming);
             }
-        };
+
+            // Fetch Day Stats (Next 3 Days)
+            const stats = {};
+            for (let i = 0; i < 3; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() + i);
+                const dateString = date.toISOString().split('T')[0];
+                const response = await eventService.getCountsForDay(date);
+                stats[dateString] = response.data.count;
+            }
+            setDayStats(stats);
+
+        } catch (error) {
+            console.error("Failed to fetch home stats", error);
+        }
+    };
+
+    useEffect(() => {
         fetchStats();
-    }, [currentTime]); // Refresh when time changes (every min) is okay, or just on mount
+    }, [currentTime]);
 
     const overviewStats = [
         { label: 'Classes', count: stats.classes, icon: HiOutlineAcademicCap, color: 'var(--class-blue)', bg: 'rgba(59, 130, 246, 0.05)' },
@@ -241,10 +234,49 @@ const HomePage = () => {
             </button>
 
             {/* Modal */}
+            {/* Modal */}
             <AddEventModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 initialType={modalType}
+                onEventAdded={() => {
+                    // Re-fetch stats and events
+                    const fetchStats = async () => {
+                        try {
+                            const today = new Date();
+                            const eventsRes = await eventService.getEventsByDay(today);
+                            if (eventsRes.success) {
+                                const events = eventsRes.data;
+                                setStats({
+                                    classes: events.filter(e => e.type === 'class').length,
+                                    tasks: events.filter(e => e.type === 'assignment' || e.type === 'deadline').length,
+                                    exams: events.filter(e => e.type === 'exam').length,
+                                    meetings: events.filter(e => e.type === 'meeting').length
+                                });
+
+                                const upcoming = events
+                                    .filter(e => new Date(e.startDate) > new Date())
+                                    .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+                                    .slice(0, 3);
+                                setUpcomingEvents(upcoming);
+                            }
+
+                            // Also refresh day stats chart if needed
+                            const stats = {};
+                            for (let i = 0; i < 3; i++) {
+                                const date = new Date();
+                                date.setDate(date.getDate() + i);
+                                const dateString = date.toISOString().split('T')[0];
+                                const response = await eventService.getCountsForDay(date);
+                                stats[dateString] = response.data.count;
+                            }
+                            setDayStats(stats);
+                        } catch (error) {
+                            console.error("Failed to refresh home stats", error);
+                        }
+                    };
+                    fetchStats();
+                }}
             />
         </div>
     );

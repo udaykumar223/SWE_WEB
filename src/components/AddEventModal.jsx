@@ -22,6 +22,7 @@ import {
 } from 'react-icons/hi';
 import './AddEventModal.css';
 import { eventService } from '../services/eventService';
+import { toast } from 'react-toastify';
 
 const AddEventModal = ({ isOpen, onClose, onEventAdded, initialType = 'class' }) => {
     const [activeTab, setActiveTab] = useState('Details');
@@ -60,7 +61,10 @@ const AddEventModal = ({ isOpen, onClose, onEventAdded, initialType = 'class' })
     const tabs = ['Details', 'Advanced', 'Notes'];
 
     const handleCreate = async () => {
-        if (!title.trim()) return;
+        if (!title.trim()) {
+            toast.warn('Please enter an event title');
+            return;
+        }
 
         const eventData = {
             title,
@@ -73,12 +77,14 @@ const AddEventModal = ({ isOpen, onClose, onEventAdded, initialType = 'class' })
             priority: priority.toLowerCase(),
             important: isImportant,
             reminders,
+            classification: classification, // Ensure backend gets this
             // date: new Date(startDate).toISOString() // Logic removed as startTime covers it
         };
 
         try {
             const response = await eventService.createEvent(eventData);
             if (response.success) {
+                toast.success('Event created successfully');
                 if (onEventAdded) onEventAdded(response.data);
                 onClose();
                 // Reset form
@@ -89,6 +95,7 @@ const AddEventModal = ({ isOpen, onClose, onEventAdded, initialType = 'class' })
             }
         } catch (error) {
             console.error('Failed to create event:', error);
+            toast.error('Failed to save event');
         }
     };
 

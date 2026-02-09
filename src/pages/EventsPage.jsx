@@ -119,6 +119,7 @@ const EventsPage = () => {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 initialType={filter === 'all' ? 'class' : filter}
+                onEventAdded={fetchEvents}
             />
         </div>
     );

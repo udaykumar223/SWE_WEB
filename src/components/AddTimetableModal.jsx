@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { HiOutlineX, HiOutlineCheckCircle, HiOutlineClock, HiOutlineAcademicCap, HiOutlineLocationMarker } from 'react-icons/hi';
 import { timetableService } from '../services/timetableService';
+import { toast } from 'react-toastify';
 import './AddEventModal.css'; // Reusing styles
 
 const AddTimetableModal = ({ isOpen, onClose, onEntryAdded }) => {
@@ -33,7 +34,10 @@ const AddTimetableModal = ({ isOpen, onClose, onEntryAdded }) => {
     };
 
     const handleSubmit = async () => {
-        if (!courseName || daysOfWeek.length === 0) return;
+        if (!courseName || daysOfWeek.length === 0) {
+            toast.warn('Please enter a course name and select at least one day');
+            return;
+        }
 
         const entryData = {
             courseName,
@@ -48,6 +52,7 @@ const AddTimetableModal = ({ isOpen, onClose, onEntryAdded }) => {
         try {
             const response = await timetableService.createEntry(entryData);
             if (response.success) {
+                toast.success('Timetable slot added successfully');
                 if (onEntryAdded) onEntryAdded(response.data);
                 onClose();
                 // Reset
@@ -56,6 +61,7 @@ const AddTimetableModal = ({ isOpen, onClose, onEntryAdded }) => {
             }
         } catch (error) {
             console.error(error);
+            toast.error('Failed to add timetable slot');
         }
     };
 

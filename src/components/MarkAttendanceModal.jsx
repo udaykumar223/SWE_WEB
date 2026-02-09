@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { HiOutlineX, HiOutlineCheckCircle, HiOutlineAcademicCap } from 'react-icons/hi';
 import { attendanceService } from '../services/attendanceService';
+import { toast } from 'react-toastify';
 import './AddEventModal.css';
 
 const MarkAttendanceModal = ({ isOpen, onClose, onAttendanceMarked }) => {
@@ -11,7 +12,10 @@ const MarkAttendanceModal = ({ isOpen, onClose, onAttendanceMarked }) => {
     if (!isOpen) return null;
 
     const handleSubmit = async () => {
-        if (!courseName) return;
+        if (!courseName) {
+            toast.warn('Please enter a course name');
+            return;
+        }
 
         const record = {
             courseName,
@@ -22,12 +26,14 @@ const MarkAttendanceModal = ({ isOpen, onClose, onAttendanceMarked }) => {
         try {
             const response = await attendanceService.markAttendance(record);
             if (response.success) {
+                toast.success('Attendance marked successfully');
                 if (onAttendanceMarked) onAttendanceMarked(response.data);
                 onClose();
                 setCourseName('');
             }
         } catch (error) {
             console.error(error);
+            toast.error('Failed to mark attendance');
         }
     };
 
