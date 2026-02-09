@@ -51,6 +51,3 @@ src/
 └── utils/          # Helper functions logic
 ```
 
-## Note
-
-This repository contains only the **Frontend** application. backend logic has been removed as per project requirements. API endpoints in `src/services/api.js` may need configuration to connect to your preferred backend service.
