@@ -22,33 +22,18 @@ const AttendancePage = () => {
             const response = await attendanceService.getStats();
             if (response.success) {
                 // Backend returns: { "Subject": { total: 10, present: 8, ... } }
-                // OR raw list. My controller returns raw list of records.
-                // So I need to calculate Stats HERE if backend returns raw list.
-                // Let's assume backend returns raw list for now because I wrote `res.json(attendance)` in controller.
+                const statsObj = response.data;
 
-                const records = response.data;
-                // Group by courseName
-                const statsMap = {};
-                records.forEach(r => {
-                    if (!statsMap[r.courseName]) {
-                        statsMap[r.courseName] = { total: 0, present: 0 };
-                    }
-                    if (r.status !== 'cancelled') {
-                        statsMap[r.courseName].total += 1;
-                        if (r.status === 'present' || r.status === 'late') {
-                            statsMap[r.courseName].present += 1;
-                        }
-                    }
-                });
+                const mapped = Object.entries(statsObj).map(([subject, stats], index) => {
+                    const attended = stats.present + (stats.late || 0); // Include late as attended
+                    const total = stats.total;
+                    const percentage = total > 0 ? Math.round((attended / total) * 100) : 0;
 
-                const mapped = Object.keys(statsMap).map((subject, index) => {
-                    const stats = statsMap[subject];
-                    const percentage = stats.total > 0 ? Math.round((stats.present / stats.total) * 100) : 0;
                     return {
                         id: index,
                         subject: subject,
-                        attended: stats.present,
-                        total: stats.total,
+                        attended: attended,
+                        total: total,
                         percentage: percentage
                     };
                 });
