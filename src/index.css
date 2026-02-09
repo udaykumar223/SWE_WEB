@@ -39,12 +39,15 @@
   --text-secondary: #CBD5E1;
   --text-tertiary: #94A3B8;
   --border-color: #334155;
+  --primary-blue: #3B82F6;
+  /* Slightly lighter blue for dark mode visibility */
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 body {
@@ -60,6 +63,7 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
+  background-color: var(--bg-primary);
 }
 
 .main-content {
@@ -67,6 +71,12 @@ body {
   padding-bottom: 80px;
   /* Space for bottom nav */
   width: 100%;
+  max-width: 1100px;
+  /* Medium web app width restored */
+  margin: 0 auto;
+  /* Center the content */
+  min-height: 100vh;
+  background-color: var(--bg-primary);
 }
 
 .card {
@@ -81,8 +91,10 @@ body {
 .bottom-nav {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1100px;
   height: 70px;
   background: var(--bg-surface);
   display: flex;

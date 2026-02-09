@@ -80,7 +80,6 @@ const ProfilePage = () => {
     ];
 
     const [toggles, setToggles] = useState({
-        'dark-mode': isDark,
         'reduced-animations': false,
         'study-mode': false,
         'event-reminders': true,
@@ -89,8 +88,11 @@ const ProfilePage = () => {
     });
 
     const handleToggle = (id) => {
-        if (id === 'dark-mode') toggleTheme();
-        setToggles(prev => ({ ...prev, [id]: !prev[id] }));
+        if (id === 'dark-mode') {
+            toggleTheme();
+        } else {
+            setToggles(prev => ({ ...prev, [id]: !prev[id] }));
+        }
     };
 
     return (
@@ -139,7 +141,7 @@ const ProfilePage = () => {
                                 {item.type === 'link' && <HiOutlineChevronRight className="arrow-icon" />}
 
                                 {item.type === 'toggle' && (
-                                    <div className={`toggle-switch ${toggles[item.id] ? 'active' : ''}`}>
+                                    <div className={`toggle-switch ${item.id === 'dark-mode' ? (isDark ? 'active' : '') : (toggles[item.id] ? 'active' : '')}`}>
                                         <div className="toggle-thumb" />
                                     </div>
                                 )}

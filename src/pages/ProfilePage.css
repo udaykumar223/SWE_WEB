@@ -1,7 +1,6 @@
 .profile-content {
-    padding: 24px 40px 140px 40px;
-    max-width: 800px;
-    margin: 0 auto;
+    padding: 24px 20px 140px 20px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -44,6 +43,7 @@
     margin: 0;
     font-size: 18px;
     font-weight: 700;
+    color: var(--text-primary);
 }
 
 .badge {
@@ -178,4 +178,5 @@
 .page-header h2 {
     font-size: 24px;
     font-weight: 700;
+    color: var(--text-primary);
 }

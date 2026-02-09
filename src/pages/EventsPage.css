@@ -1,12 +1,11 @@
 .events-content {
-    background-color: #ffffff;
+    background-color: var(--bg-primary);
     min-height: 100vh;
-    padding: 24px 40px 100px 40px;
+    padding: 24px 20px 100px 20px;
     display: flex;
     flex-direction: column;
     gap: 24px;
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 100%;
 }
 
 .events-header {
@@ -21,6 +20,7 @@
 .page-title {
     font-size: 20px;
     font-weight: 700;
+    color: var(--text-primary);
 }
 
 .header-action {
@@ -50,7 +50,7 @@
     padding: 8px 16px;
     border-radius: 8px;
     border: 1px solid var(--border-color);
-    background: #fff;
+    background: var(--bg-surface);
     color: var(--text-secondary);
     font-size: 13px;
     font-weight: 500;
@@ -99,6 +99,10 @@
     justify-content: center;
 }
 
+[data-theme='dark'] .empty-icon-wrapper {
+    background: var(--bg-surface);
+}
+
 .empty-cal-icon {
     font-size: 32px;
     color: var(--primary-blue);
@@ -108,41 +112,49 @@
 .empty-events-state h3 {
     font-size: 16px;
     font-weight: 700;
+    color: var(--text-primary);
 }
 
 .empty-events-state p {
     font-size: 13px;
-    color: #94a3b8;
+    color: var(--text-tertiary);
 }
 
 /* FAB Styling */
 .fab-web {
     position: fixed;
     bottom: 100px;
-    right: 40px;
+    right: calc(50% - 530px);
     background: var(--primary-blue);
     color: white;
     border: none;
-    padding: 12px 24px;
-    border-radius: 30px;
+    padding: 16px 36px;
+    border-radius: 50px;
     font-weight: 700;
+    font-size: 16px;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    justify-content: center;
+    gap: 12px;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
     cursor: pointer;
     z-index: 1100;
+    transition: all 0.2s;
+}
+
+@media (max-width: 1100px) {
+    .fab-web {
+        right: 20px;
+    }
+}
+
+.fab-web:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(37, 99, 235, 0.5);
 }
 
 .fab-web svg {
-    font-size: 18px;
-}
-
-@media (max-width: 768px) {
-    .events-content {
-        padding: 20px 20px 100px 20px;
-    }
+    font-size: 22px;
 }
 
 .events-list {
