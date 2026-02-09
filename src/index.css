@@ -133,7 +133,9 @@ body {
 }
 
 .nav-item.active {
-  color: var(--secondary-teal);
+  color: var(--primary-blue);
+  background: rgba(99, 102, 241, 0.08);
+  border-radius: 12px;
 }
 
 .nav-item svg {
