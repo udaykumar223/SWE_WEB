@@ -59,9 +59,12 @@ const Navigation = () => {
   );
 };
 
+import LoadingSpinner from './components/LoadingSpinner';
+import Footer from './components/Footer';
+
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
-  if (loading) return <div className="loading-screen">Loading...</div>;
+  if (loading) return <div className="loading-screen"><LoadingSpinner /></div>;
   return isAuthenticated ? children : <Navigate to="/auth" replace />;
 };
 
@@ -88,6 +91,7 @@ function App() {
                 <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
+              <Footer />
             </main>
             <Navigation />
             <ToastContainer position="top-right" theme="colored" />
