@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { HiOutlineChevronLeft, HiPlus, HiOutlineClock, HiOutlineLocationMarker } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { timetableService } from '../services/timetableService';
-import { useEffect } from 'react';
+import AddTimetableModal from '../components/AddTimetableModal';
 import './TimetablePage.css';
 
 const TimetablePage = () => {
@@ -12,6 +12,7 @@ const TimetablePage = () => {
     const [selectedDayIndex, setSelectedDayIndex] = useState(new Date().getDay() === 0 ? 6 : new Date().getDay() - 1);
     const [schedule, setSchedule] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     useEffect(() => {
         fetchTimetable();
@@ -23,8 +24,6 @@ const TimetablePage = () => {
             const response = await timetableService.getTimetable();
             if (response.success) {
                 // Filter for selected day (1=Monday, 7=Sunday)
-                // Backend daysOfWeek: 1=Monday...
-                // selectedDayIndex: 0=Monday... 
                 const currentDayBackend = selectedDayIndex + 1;
 
                 const filtered = response.data.filter(entry =>
@@ -32,14 +31,23 @@ const TimetablePage = () => {
                 );
 
                 // Map to UI format
-                const mapped = filtered.map(entry => ({
-                    id: entry._id,
-                    time: `${entry.startTime.hour.toString().padStart(2, '0')}:${entry.startTime.minute.toString().padStart(2, '0')} - ${entry.endTime.hour.toString().padStart(2, '0')}:${entry.endTime.minute.toString().padStart(2, '0')}`,
-                    subject: entry.courseName,
-                    code: entry.courseCode || '',
-                    professor: entry.instructor || '',
-                    room: entry.room || 'TBA'
-                }));
+                const mapped = filtered.map(entry => {
+                    // entry.startTime is "HH:mm" string
+                    const startStr = entry.startTime;
+                    const endStr = entry.endTime;
+
+                    return {
+                        id: entry._id,
+                        time: `${startStr} - ${endStr}`,
+                        subject: entry.courseName,
+                        code: entry.courseCode || '',
+                        professor: entry.instructor || '',
+                        room: entry.room || 'TBA'
+                    };
+                });
+
+                // Sort by time
+                mapped.sort((a, b) => a.time.localeCompare(b.time));
 
                 setSchedule(mapped);
             }
@@ -88,7 +96,7 @@ const TimetablePage = () => {
                                 </div>
                                 <div className="schedule-info">
                                     <h3>{item.subject}</h3>
-                                    <p className="subject-code">{item.code} • {item.professor}</p>
+                                    <p className="subject-code">{item.code} {item.professor && `• ${item.professor}`}</p>
                                     <div className="schedule-location">
                                         <HiOutlineLocationMarker />
                                         <span>{item.room}</span>
@@ -104,10 +112,15 @@ const TimetablePage = () => {
                 </div>
             </div>
 
-
-            <button className="fab">
+            <button className="fab" onClick={() => setIsAddModalOpen(true)}>
                 <HiPlus /> Add Slot
             </button>
+
+            <AddTimetableModal
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                onEntryAdded={fetchTimetable}
+            />
         </div>
     );
 };

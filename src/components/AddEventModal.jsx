@@ -66,14 +66,14 @@ const AddEventModal = ({ isOpen, onClose, onEventAdded, initialType = 'class' })
             title,
             type: classification,
             category,
-            startDate,
-            endDate,
+            startTime: startDate, // Map to backend schema
+            endTime: endDate,     // Map to backend schema
             location,
             notes,
             priority: priority.toLowerCase(),
             important: isImportant,
             reminders,
-            date: new Date(startDate).toISOString()
+            // date: new Date(startDate).toISOString() // Logic removed as startTime covers it
         };
 
         try {

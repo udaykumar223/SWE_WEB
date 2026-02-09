@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { HiOutlineChevronLeft, HiChevronRight, HiOutlineChartPie } from 'react-icons/hi';
+import { useState, useEffect } from 'react';
+import { HiOutlineChevronLeft, HiChevronRight, HiOutlineChartPie, HiPlus } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { attendanceService } from '../services/attendanceService';
-import { useEffect } from 'react';
+import MarkAttendanceModal from '../components/MarkAttendanceModal';
 import './AttendancePage.css';
 
 const AttendancePage = () => {
@@ -10,6 +10,7 @@ const AttendancePage = () => {
 
     const [attendanceData, setAttendanceData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [isMarkModalOpen, setIsMarkModalOpen] = useState(false);
 
     useEffect(() => {
         fetchAttendance();
@@ -21,17 +22,33 @@ const AttendancePage = () => {
             const response = await attendanceService.getStats();
             if (response.success) {
                 // Backend returns: { "Subject": { total: 10, present: 8, ... } }
-                // Map to array
-                const mapped = Object.entries(response.data).map(([subject, stats], index) => {
-                    const attended = stats.present;
-                    const total = stats.total; // Use total classes (excluding cancelled)
-                    const percentage = total > 0 ? Math.round((attended / total) * 100) : 0;
+                // OR raw list. My controller returns raw list of records.
+                // So I need to calculate Stats HERE if backend returns raw list.
+                // Let's assume backend returns raw list for now because I wrote `res.json(attendance)` in controller.
 
+                const records = response.data;
+                // Group by courseName
+                const statsMap = {};
+                records.forEach(r => {
+                    if (!statsMap[r.courseName]) {
+                        statsMap[r.courseName] = { total: 0, present: 0 };
+                    }
+                    if (r.status !== 'cancelled') {
+                        statsMap[r.courseName].total += 1;
+                        if (r.status === 'present' || r.status === 'late') {
+                            statsMap[r.courseName].present += 1;
+                        }
+                    }
+                });
+
+                const mapped = Object.keys(statsMap).map((subject, index) => {
+                    const stats = statsMap[subject];
+                    const percentage = stats.total > 0 ? Math.round((stats.present / stats.total) * 100) : 0;
                     return {
                         id: index,
                         subject: subject,
-                        attended: attended,
-                        total: total,
+                        attended: stats.present,
+                        total: stats.total,
                         percentage: percentage
                     };
                 });
@@ -59,6 +76,9 @@ const AttendancePage = () => {
                     <HiOutlineChevronLeft />
                 </button>
                 <h2>Attendance Tracker</h2>
+                <button className="icon-btn" onClick={() => setIsMarkModalOpen(true)}>
+                    <HiPlus />
+                </button>
             </header>
 
             <div className="overall-stats-card">
@@ -109,6 +129,12 @@ const AttendancePage = () => {
                     ))}
                 </div>
             </section>
+
+            <MarkAttendanceModal
+                isOpen={isMarkModalOpen}
+                onClose={() => setIsMarkModalOpen(false)}
+                onAttendanceMarked={fetchAttendance}
+            />
         </div>
     );
 };
