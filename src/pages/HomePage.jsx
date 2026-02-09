@@ -63,11 +63,55 @@ const HomePage = () => {
         return 'Good Evening';
     };
 
+    const [stats, setStats] = useState({
+        classes: 0,
+        tasks: 0,
+        exams: 0,
+        meetings: 0
+    });
+    const [upcomingEvents, setUpcomingEvents] = useState([]);
+
+    useEffect(() => {
+        // Fetch Today's Stats
+        const fetchStats = async () => {
+            try {
+                const response = await eventService.getTodayStats();
+                if (response.success) {
+                    // response.data has total, completed, pending, etc.
+                    // We need breakdown by type. 
+                    // Let's manually fetch today's events and count for now or update backend/service to return breakdown.
+                    // For speed: Fetch all events for today and count.
+                    const today = new Date();
+                    const eventsRes = await eventService.getEventsByDay(today);
+                    if (eventsRes.success) {
+                        const events = eventsRes.data;
+                        setStats({
+                            classes: events.filter(e => e.type === 'class').length,
+                            tasks: events.filter(e => e.type === 'assignment' || e.type === 'deadline').length,
+                            exams: events.filter(e => e.type === 'exam').length,
+                            meetings: events.filter(e => e.type === 'meeting').length
+                        });
+
+                        // Top 3 upcoming events for today
+                        const upcoming = events
+                            .filter(e => new Date(e.startDate) > new Date())
+                            .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+                            .slice(0, 3);
+                        setUpcomingEvents(upcoming);
+                    }
+                }
+            } catch (error) {
+                console.error("Failed to fetch home stats", error);
+            }
+        };
+        fetchStats();
+    }, [currentTime]); // Refresh when time changes (every min) is okay, or just on mount
+
     const overviewStats = [
-        { label: 'Classes', count: 0, icon: HiOutlineAcademicCap, color: 'var(--class-blue)', bg: 'rgba(59, 130, 246, 0.05)' },
-        { label: 'Tasks', count: 0, icon: HiOutlineClipboardList, color: 'var(--assignment-purple)', bg: 'rgba(139, 92, 246, 0.05)' },
-        { label: 'Exams', count: 0, icon: HiOutlineInformationCircle, color: 'var(--exam-orange)', bg: 'rgba(245, 158, 11, 0.05)' },
-        { label: 'Meetings', count: 0, icon: HiOutlineUsers, color: 'var(--meeting-teal)', bg: 'rgba(20, 184, 166, 0.05)' },
+        { label: 'Classes', count: stats.classes, icon: HiOutlineAcademicCap, color: 'var(--class-blue)', bg: 'rgba(59, 130, 246, 0.05)' },
+        { label: 'Tasks', count: stats.tasks, icon: HiOutlineClipboardList, color: 'var(--assignment-purple)', bg: 'rgba(139, 92, 246, 0.05)' },
+        { label: 'Exams', count: stats.exams, icon: HiOutlineInformationCircle, color: 'var(--exam-orange)', bg: 'rgba(245, 158, 11, 0.05)' },
+        { label: 'Meetings', count: stats.meetings, icon: HiOutlineUsers, color: 'var(--meeting-teal)', bg: 'rgba(20, 184, 166, 0.05)' },
     ];
 
     const quickActions = [
@@ -137,12 +181,29 @@ const HomePage = () => {
 
             {/* Upcoming Events */}
             <section className="section">
-                <h3 className="section-title">Upcoming Events</h3>
-                <div className="empty-state-card card">
-                    <HiOutlineCheckCircle className="check-icon" />
-                    <h4>All Caught Up!</h4>
-                    <p>No more events today</p>
-                </div>
+                <h3 className="section-title">Upcoming Events Today</h3>
+                {upcomingEvents.length > 0 ? (
+                    <div className="upcoming-events-list">
+                        {upcomingEvents.map(event => (
+                            <div key={event._id} className="event-card-home card">
+                                <div className={`event-type-indicator ${event.type}`} />
+                                <div className="event-info-home">
+                                    <h4>{event.title}</h4>
+                                    <div className="event-meta-home">
+                                        <HiOutlineClock />
+                                        <span>{new Date(event.startDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="empty-state-card card">
+                        <HiOutlineCheckCircle className="check-icon" />
+                        <h4>All Caught Up!</h4>
+                        <p>No more events today</p>
+                    </div>
+                )}
             </section>
 
             {/* Next 3 Days */}

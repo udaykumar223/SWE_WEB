@@ -23,7 +23,7 @@ import {
 import './AddEventModal.css';
 import { eventService } from '../services/eventService';
 
-const AddEventModal = ({ isOpen, onClose, initialType = 'class' }) => {
+const AddEventModal = ({ isOpen, onClose, onEventAdded, initialType = 'class' }) => {
     const [activeTab, setActiveTab] = useState('Details');
     const [classification, setClassification] = useState(initialType);
     const [title, setTitle] = useState('');
@@ -79,6 +79,7 @@ const AddEventModal = ({ isOpen, onClose, initialType = 'class' }) => {
         try {
             const response = await eventService.createEvent(eventData);
             if (response.success) {
+                if (onEventAdded) onEventAdded(response.data);
                 onClose();
                 // Reset form
                 setTitle('');

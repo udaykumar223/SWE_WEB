@@ -24,11 +24,16 @@ const AuthPage = () => {
         try {
             if (isLogin) {
                 await login({ email: formData.email, password: formData.password });
+                toast.success('Welcome back!');
             } else {
                 await register({ name: formData.name, email: formData.email, password: formData.password });
+                toast.success('Account created! Please sign in.');
+                setIsLogin(true);
             }
         } catch (error) {
-            toast.error(error.message || 'Authentication failed');
+            // Error handling in API service might throw object or string
+            const msg = error.response?.data?.message || error.message || 'Authentication failed';
+            toast.error(msg);
         } finally {
             setLoading(false);
         }

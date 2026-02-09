@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { HiOutlineChevronLeft, HiPlus, HiOutlineClock, HiOutlineLocationMarker } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
+import { timetableService } from '../services/timetableService';
+import { useEffect } from 'react';
 import './TimetablePage.css';
 
 const TimetablePage = () => {
@@ -8,8 +10,45 @@ const TimetablePage = () => {
     const days = ['M', 'T', 'W', 'Th', 'F', 'S', 'Su'];
     const fullDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     const [selectedDayIndex, setSelectedDayIndex] = useState(new Date().getDay() === 0 ? 6 : new Date().getDay() - 1);
+    const [schedule, setSchedule] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    const mockSchedule = [];
+    useEffect(() => {
+        fetchTimetable();
+    }, [selectedDayIndex]);
+
+    const fetchTimetable = async () => {
+        setLoading(true);
+        try {
+            const response = await timetableService.getTimetable();
+            if (response.success) {
+                // Filter for selected day (1=Monday, 7=Sunday)
+                // Backend daysOfWeek: 1=Monday...
+                // selectedDayIndex: 0=Monday... 
+                const currentDayBackend = selectedDayIndex + 1;
+
+                const filtered = response.data.filter(entry =>
+                    entry.daysOfWeek.includes(currentDayBackend)
+                );
+
+                // Map to UI format
+                const mapped = filtered.map(entry => ({
+                    id: entry._id,
+                    time: `${entry.startTime.hour.toString().padStart(2, '0')}:${entry.startTime.minute.toString().padStart(2, '0')} - ${entry.endTime.hour.toString().padStart(2, '0')}:${entry.endTime.minute.toString().padStart(2, '0')}`,
+                    subject: entry.courseName,
+                    code: entry.courseCode || '',
+                    professor: entry.instructor || '',
+                    room: entry.room || 'TBA'
+                }));
+
+                setSchedule(mapped);
+            }
+        } catch (error) {
+            console.error("Failed to fetch timetable", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="timetable-content fade-in">
@@ -38,8 +77,10 @@ const TimetablePage = () => {
                 <h4 className="day-title">{fullDays[selectedDayIndex]}</h4>
 
                 <div className="schedule-list">
-                    {mockSchedule.length > 0 ? (
-                        mockSchedule.map((item) => (
+                    {loading ? (
+                        <p>Loading...</p>
+                    ) : schedule.length > 0 ? (
+                        schedule.map((item) => (
                             <div key={item.id} className="schedule-card card">
                                 <div className="schedule-time-line">
                                     <HiOutlineClock className="time-icon" />

@@ -26,15 +26,20 @@ import {
 import './ProfilePage.css';
 
 const ProfilePage = () => {
-    const { logout } = useAuth();
+    const { user, logout } = useAuth();
     const { isDark, toggleTheme } = useTheme();
+
+    // Get initials
+    const getInitials = (name) => {
+        return name ? name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : 'U';
+    };
 
     const sections = [
         {
             title: 'Personal Information',
             items: [
-                { label: 'Name', value: 'Student User', icon: HiOutlineUser },
-                { label: 'Role', value: 'Student', icon: HiOutlineAcademicCap },
+                { label: 'Name', value: user?.name || 'User', icon: HiOutlineUser },
+                { label: 'Role', value: user?.role || 'Student', icon: HiOutlineAcademicCap },
                 { label: 'Semester', value: 'Spring 2026', icon: HiOutlineCalendar },
                 { label: 'Institution', value: 'University Name', icon: HiOutlineOfficeBuilding },
             ]
@@ -103,14 +108,14 @@ const ProfilePage = () => {
 
             <div className="profile-header-card card">
                 <div className="avatar-box">
-                    <span>SU</span>
+                    <span>{getInitials(user?.name)}</span>
                 </div>
                 <div className="profile-info">
                     <div className="name-row">
-                        <h3>Student User</h3>
-                        <span className="badge student">Student</span>
+                        <h3>{user?.name || 'Guest User'}</h3>
+                        <span className="badge student">{user?.role || 'Student'}</span>
                     </div>
-                    <p className="email-text">student@university.edu</p>
+                    <p className="email-text">{user?.email || 'No email'}</p>
                 </div>
             </div>
 

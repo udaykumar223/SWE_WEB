@@ -16,23 +16,48 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check if user is logged in on mount
-        const storedUser = authService.getCurrentUser();
-        if (storedUser) {
-            setUser(storedUser);
-        }
-        setLoading(false);
+        const checkAuth = async () => {
+            const token = sessionStorage.getItem('token');
+            if (token) {
+                try {
+                    const response = await authService.getMe();
+                    if (response.success) {
+                        setUser(response.data);
+                    } else {
+                        // Token invalid/expired
+                        sessionStorage.removeItem('token');
+                        sessionStorage.removeItem('user');
+                        setUser(null);
+                    }
+                } catch (error) {
+                    sessionStorage.removeItem('token');
+                    sessionStorage.removeItem('user');
+                    setUser(null);
+                }
+            } else {
+                sessionStorage.removeItem('user'); // Clean up any stale user data
+                setUser(null);
+            }
+            setLoading(false);
+        };
+        checkAuth();
     }, []);
 
     const login = async (credentials) => {
         const data = await authService.login(credentials);
-        setUser(data.data.user);
+        // Real API returns { token, user } directly
+        if (data.user) {
+            setUser(data.user);
+        }
         return data;
     };
 
     const register = async (userData) => {
         const data = await authService.register(userData);
-        setUser(data.data.user);
+        // Real API register returns { message } only. 
+        // User needs to login after register, or we auto-login.
+        // For now, we don't set user here basically.
+        // setUser(data.user); // Remove this or handle auto-login if backend supports it.
         return data;
     };
 

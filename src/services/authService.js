@@ -1,97 +1,49 @@
-// Mock Authentication Service for Frontend-only Demo
+import api from './api';
+
 export const authService = {
     // Register new user
     register: async (userData) => {
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 800));
-
-        const mockUser = {
-            id: 'mock-user-123',
-            name: userData.name || 'Demo User',
-            email: userData.email,
-            role: 'user',
-            avatar: null
-        };
-
-        const mockToken = 'mock-jwt-token-xyz';
-
-        localStorage.setItem('token', mockToken);
-        localStorage.setItem('user', JSON.stringify(mockUser));
-
-        return {
-            success: true,
-            message: 'Registration successful (Demo Mode)',
-            data: { user: mockUser, token: mockToken }
-        };
+        const response = await api.post('/auth/register', userData);
+        return response.data;
     },
 
     // Login user
     login: async (credentials) => {
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 800));
-
-        const mockUser = {
-            id: 'mock-user-123',
-            name: 'Demo User',
-            email: credentials.email,
-            role: 'user',
-            avatar: null
-        };
-
-        const mockToken = 'mock-jwt-token-xyz';
-
-        localStorage.setItem('token', mockToken);
-        localStorage.setItem('user', JSON.stringify(mockUser));
-
-        return {
-            success: true,
-            message: 'Login successful (Demo Mode)',
-            data: { user: mockUser, token: mockToken }
-        };
+        const response = await api.post('/auth/login', credentials);
+        if (response.data.token) {
+            sessionStorage.setItem('token', response.data.token);
+            sessionStorage.setItem('user', JSON.stringify(response.data.user)); // Store user data
+        }
+        return response.data;
     },
 
     // Logout user
     logout: () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('user');
     },
 
-    // Get current user
+    // Get current user (Verify token)
     getMe: async () => {
-        const user = JSON.parse(localStorage.getItem('user'));
-        return {
-            success: true,
-            data: user
-        };
-    },
-
-    // Update profile
-    updateProfile: async (userData) => {
-        const currentUser = JSON.parse(localStorage.getItem('user'));
-        const updatedUser = { ...currentUser, ...userData };
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        return {
-            success: true,
-            data: updatedUser
-        };
-    },
-
-    // Update password
-    updatePassword: async (passwords) => {
-        return {
-            success: true,
-            message: 'Password updated successfully (Demo Mode)'
-        };
+        try {
+            const response = await api.get('/auth/me');
+            return {
+                success: true,
+                data: response.data
+            };
+        } catch (error) {
+            return { success: false };
+        }
     },
 
     // Get stored user
     getCurrentUser: () => {
-        const userStr = localStorage.getItem('user');
+        const userStr = sessionStorage.getItem('user');
         return userStr ? JSON.parse(userStr) : null;
     },
 
     // Check if user is authenticated
     isAuthenticated: () => {
-        return !!localStorage.getItem('token');
+        return !!sessionStorage.getItem('token');
     },
 };

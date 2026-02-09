@@ -1,21 +1,56 @@
 import { useState } from 'react';
 import { HiOutlineChevronLeft, HiChevronRight, HiOutlineChartPie } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
+import { attendanceService } from '../services/attendanceService';
+import { useEffect } from 'react';
 import './AttendancePage.css';
 
 const AttendancePage = () => {
     const navigate = useNavigate();
 
-    const attendanceData = [
-        { id: 1, subject: 'Advanced Software Engineering', attended: 12, total: 15, percentage: 80 },
-        { id: 2, subject: 'Network Security', attended: 10, total: 12, percentage: 83 },
-        { id: 3, subject: 'Database Management', attended: 8, total: 10, percentage: 80 },
-    ];
+    const [attendanceData, setAttendanceData] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    const overallPercentage = Math.round(
-        (attendanceData.reduce((acc, curr) => acc + curr.attended, 0) /
-            attendanceData.reduce((acc, curr) => acc + curr.total, 0)) * 100
-    );
+    useEffect(() => {
+        fetchAttendance();
+    }, []);
+
+    const fetchAttendance = async () => {
+        setLoading(true);
+        try {
+            const response = await attendanceService.getStats();
+            if (response.success) {
+                // Backend returns: { "Subject": { total: 10, present: 8, ... } }
+                // Map to array
+                const mapped = Object.entries(response.data).map(([subject, stats], index) => {
+                    const attended = stats.present;
+                    const total = stats.total; // Use total classes (excluding cancelled)
+                    const percentage = total > 0 ? Math.round((attended / total) * 100) : 0;
+
+                    return {
+                        id: index,
+                        subject: subject,
+                        attended: attended,
+                        total: total,
+                        percentage: percentage
+                    };
+                });
+                setAttendanceData(mapped);
+            }
+        } catch (error) {
+            console.error("Failed to fetch attendance stats", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const overallPercentage = attendanceData.length > 0
+        ? Math.round(
+            (attendanceData.reduce((acc, curr) => acc + curr.attended, 0) /
+                (attendanceData.reduce((acc, curr) => acc + curr.total, 0) || 1)) * 100
+        )
+        : 0;
+
 
     return (
         <div className="attendance-content fade-in">
@@ -35,11 +70,11 @@ const AttendancePage = () => {
                     <div className="stats-details">
                         <div className="stat-row">
                             <span className="dot success" />
-                            <span>Total Attended: 30</span>
+                            <span>Total Attended: {attendanceData.reduce((acc, curr) => acc + curr.attended, 0)}</span>
                         </div>
                         <div className="stat-row">
                             <span className="dot error" />
-                            <span>Total Classes: 37</span>
+                            <span>Total Classes: {attendanceData.reduce((acc, curr) => acc + curr.total, 0)}</span>
                         </div>
                     </div>
                 </div>
