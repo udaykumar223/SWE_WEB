@@ -46,4 +46,26 @@ export const authService = {
     isAuthenticated: () => {
         return !!sessionStorage.getItem('token');
     },
+
+    // Google Sign-In
+    googleLogin: async (credential) => {
+        const response = await api.post('/auth/google', { credential });
+        if (response.data.token) {
+            sessionStorage.setItem('token', response.data.token);
+            sessionStorage.setItem('user', JSON.stringify(response.data.user));
+        }
+        return response.data;
+    },
+
+    // Forgot Password - send OTP
+    forgotPassword: async (email) => {
+        const response = await api.post('/auth/forgot-password', { email });
+        return response.data;
+    },
+
+    // Reset Password - verify OTP and set new password
+    resetPassword: async (email, otp, newPassword) => {
+        const response = await api.post('/auth/reset-password', { email, otp, newPassword });
+        return response.data;
+    },
 };

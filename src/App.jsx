@@ -13,6 +13,7 @@ import EventsPage from './pages/EventsPage';
 import TimetablePage from './pages/TimetablePage';
 import AttendancePage from './pages/AttendancePage';
 import ProfilePage from './pages/ProfilePage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 
 // Icons
 import {
@@ -83,6 +84,7 @@ function App() {
             <main className="main-content">
               <Routes>
                 <Route path="/auth" element={<PublicRoute><AuthPage /></PublicRoute>} />
+                <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
                 <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
                 <Route path="/calendar" element={<ProtectedRoute><CalendarPage /></ProtectedRoute>} />
                 <Route path="/events" element={<ProtectedRoute><EventsPage /></ProtectedRoute>} />

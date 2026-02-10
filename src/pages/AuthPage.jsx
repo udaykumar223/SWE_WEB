@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import { HiOutlineMail, HiOutlineLockClosed, HiOutlineUser, HiEye, HiEyeOff, HiOutlineAcademicCap } from 'react-icons/hi';
@@ -6,11 +7,14 @@ import { FcGoogle } from 'react-icons/fc';
 import './AuthPage.css';
 import appLogo from '../assets/selogo.png';
 
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
 const AuthPage = () => {
+    const navigate = useNavigate();
     const [isLogin, setIsLogin] = useState(true);
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const { login, register } = useAuth();
+    const { login, register, googleLogin } = useAuth();
 
     const [formData, setFormData] = useState({
         email: '',
@@ -37,6 +41,50 @@ const AuthPage = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleGoogleLogin = () => {
+        if (!GOOGLE_CLIENT_ID) {
+            toast.error('Google Sign-In is not configured');
+            return;
+        }
+
+        if (!window.google) {
+            toast.error('Google Sign-In is loading, please try again');
+            return;
+        }
+
+        window.google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: async (response) => {
+                setLoading(true);
+                try {
+                    await googleLogin(response.credential);
+                    toast.success('Welcome!');
+                } catch (error) {
+                    const msg = error.response?.data?.message || error.message || 'Google sign-in failed';
+                    toast.error(msg);
+                } finally {
+                    setLoading(false);
+                }
+            },
+        });
+
+        window.google.accounts.id.prompt((notification) => {
+            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                // If One Tap is blocked/skipped, fall back to the button-style popup
+                window.google.accounts.id.renderButton(
+                    document.getElementById('google-signin-fallback'),
+                    { theme: 'outline', size: 'large', width: '100%' }
+                );
+                // Auto-click the rendered button
+                const fallback = document.getElementById('google-signin-fallback');
+                if (fallback) {
+                    const btn = fallback.querySelector('div[role="button"]');
+                    if (btn) btn.click();
+                }
+            }
+        });
     };
 
     return (
@@ -103,7 +151,7 @@ const AuthPage = () => {
                         </button>
                     </div>
 
-                    {isLogin && <div className="forgot-password-web">Forgot Password?</div>}
+                    {isLogin && <div className="forgot-password-web" onClick={() => navigate('/forgot-password')}>Forgot Password?</div>}
 
                     <button type="submit" className="btn-filled-auth" disabled={loading}>
                         {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Sign Up')}
@@ -123,13 +171,15 @@ const AuthPage = () => {
                     <div className="line" />
                 </div>
 
-                <button className="google-btn-web">
+                <button className="google-btn-web" onClick={handleGoogleLogin} disabled={loading}>
                     <FcGoogle className="google-icon" />
                     <span>Continue with Google</span>
                 </button>
+                <div id="google-signin-fallback" style={{ display: 'none' }}></div>
             </div>
         </div>
     );
 };
 
 export default AuthPage;
+
