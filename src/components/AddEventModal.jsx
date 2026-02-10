@@ -66,6 +66,11 @@ const AddEventModal = ({ isOpen, onClose, onEventAdded, initialType = 'class' })
             return;
         }
 
+        if (new Date(endDate) < new Date(startDate)) {
+            toast.warn('End time cannot be before start time');
+            return;
+        }
+
         const eventData = {
             title,
             type: classification,
@@ -236,7 +241,18 @@ const AddEventModal = ({ isOpen, onClose, onEventAdded, initialType = 'class' })
                                         <input
                                             type="datetime-local"
                                             value={startDate}
-                                            onChange={(e) => setStartDate(e.target.value)}
+                                            onChange={(e) => {
+                                                setStartDate(e.target.value);
+                                                // Auto-adjust end date if it becomes before start date
+                                                if (endDate < e.target.value) {
+                                                    const newStart = new Date(e.target.value);
+                                                    const newEnd = new Date(newStart.getTime() + 60 * 60 * 1000); // +1 hour
+                                                    // Handle timezone offset for datetime-local
+                                                    const tzOffset = newEnd.getTimezoneOffset() * 60000;
+                                                    const localISOTime = (new Date(newEnd - tzOffset)).toISOString().slice(0, 16);
+                                                    setEndDate(localISOTime);
+                                                }
+                                            }}
                                         />
                                     </label>
                                 </div>

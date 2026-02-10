@@ -1,3 +1,4 @@
+/* Existing Calendar CSS */
 .calendar-content {
     background-color: var(--bg-primary);
     min-height: 100vh;
@@ -28,12 +29,12 @@
     right: 0;
 }
 
-
 .calendar-container {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 24px;
 }
 
 .calendar-wrapper {
@@ -128,6 +129,161 @@
     border-radius: 50% !important;
     box-shadow: 0 8px 15px rgba(37, 99, 235, 0.3) !important;
     transform: scale(0.75);
+}
+
+/* --- TIMELINE STYLES --- */
+
+.events-list-section {
+    width: 100%;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+}
+
+.timeline-container {
+    position: relative;
+    padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.timeline-line {
+    position: absolute;
+    left: 85px;
+    /* Adjust based on time width */
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    background: var(--border-color);
+    z-index: 0;
+}
+
+.timeline-item {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    width: 100%;
+    z-index: 1;
+}
+
+.timeline-time {
+    width: 75px;
+    text-align: right;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding-top: 16px;
+    /* Align with card top */
+    padding-right: 12px;
+    flex-shrink: 0;
+}
+
+.timeline-marker {
+    width: 20px;
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+    /* Align dot */
+    flex-shrink: 0;
+}
+
+.timeline-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--primary-blue);
+    border: 2px solid var(--bg-primary);
+    box-shadow: 0 0 0 2px var(--border-color);
+}
+
+.timeline-content {
+    flex-grow: 1;
+    margin-left: 12px;
+    padding: 16px;
+    background: var(--bg-surface);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s;
+}
+
+.timeline-content:active {
+    transform: scale(0.98);
+}
+
+/* Event Types Colors for Dots and Badges */
+.timeline-dot.class {
+    background: var(--class-blue);
+}
+
+.timeline-dot.exam {
+    background: var(--exam-orange);
+}
+
+.timeline-dot.assignment {
+    background: var(--assignment-purple);
+}
+
+.timeline-dot.meeting {
+    background: var(--meeting-teal);
+}
+
+.timeline-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.timeline-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.timeline-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-transform: capitalize;
+}
+
+.timeline-badge.class {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--class-blue);
+}
+
+.timeline-badge.exam {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--exam-orange);
+}
+
+.timeline-badge.assignment {
+    background: rgba(139, 92, 246, 0.1);
+    color: var(--assignment-purple);
+}
+
+.timeline-badge.meeting {
+    background: rgba(20, 184, 166, 0.1);
+    color: var(--meeting-teal);
+}
+
+.timeline-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.timeline-row {
+    font-size: 13px;
+    color: var(--text-tertiary);
 }
 
 /* Empty Events Section */

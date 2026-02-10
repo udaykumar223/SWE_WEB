@@ -4,6 +4,7 @@ import 'react-calendar/dist/Calendar.css';
 import { HiPlus, HiOutlineViewGrid, HiOutlineCalendar } from 'react-icons/hi';
 import './CalendarPage.css';
 import AddEventModal from '../components/AddEventModal';
+import EventDetailsModal from '../components/EventDetailsModal';
 
 import { eventService } from '../services/eventService';
 import { useEffect } from 'react';
@@ -13,6 +14,8 @@ const CalendarPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
     useEffect(() => {
         fetchEvents();
@@ -61,18 +64,43 @@ const CalendarPage = () => {
                     {loading ? (
                         <p>Loading events...</p>
                     ) : events.length > 0 ? (
-                        <div className="events-list">
-                            {events.map(event => (
-                                <div key={event._id} className={`event-card ${event.type}`}>
-                                    <div className="event-time">
-                                        {new Date(event.startDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        <div className="timeline-container">
+                            {/* Vertical Line placed via CSS */}
+                            <div className="timeline-line"></div>
+
+                            {events
+                                .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
+                                .map(event => (
+                                    <div key={event._id} className="timeline-item" onClick={() => {
+                                        setSelectedEvent(event);
+                                        setIsDetailsOpen(true);
+                                    }} style={{ cursor: 'pointer' }}>
+                                        <div className="timeline-time">
+                                            {new Date(event.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        </div>
+                                        <div className="timeline-marker">
+                                            <div className={`timeline-dot ${event.type}`}></div>
+                                        </div>
+                                        <div className={`timeline-content card ${event.type}`}>
+                                            <div className="timeline-card-header">
+                                                <h4 className="timeline-title">{event.title}</h4>
+                                                <span className={`timeline-badge ${event.type}`}>{event.type}</span>
+                                            </div>
+                                            <div className="timeline-card-body">
+                                                <div className="timeline-row">
+                                                    <span className="timeline-date">
+                                                        {new Date(event.startTime).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
+                                                    </span>
+                                                </div>
+                                                {event.location && (
+                                                    <div className="timeline-row">
+                                                        <span className="timeline-loc">{event.location}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="event-details">
-                                        <h4>{event.title}</h4>
-                                        <p>{event.location}</p>
-                                    </div>
-                                </div>
-                            ))}
+                                ))}
                         </div>
                     ) : (
                         <div className="empty-events-state">
@@ -95,6 +123,12 @@ const CalendarPage = () => {
                 onClose={() => setIsModalOpen(false)}
                 onEventAdded={() => fetchEvents()}
                 initialType="class"
+            />
+
+            <EventDetailsModal
+                isOpen={isDetailsOpen}
+                onClose={() => setIsDetailsOpen(false)}
+                event={selectedEvent}
             />
         </div>
     );

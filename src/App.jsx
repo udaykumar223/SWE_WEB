@@ -34,7 +34,7 @@ const Navigation = () => {
   const navItems = [
     { path: '/', label: 'Home', icon: HiOutlineHome, activeIcon: HiHome },
     { path: '/calendar', label: 'Calendar', icon: HiOutlineCalendar, activeIcon: HiCalendar },
-    { path: '/timetable', label: 'Timeline', icon: HiOutlineClock, activeIcon: HiClock },
+    { path: '/timetable', label: 'Timetable', icon: HiOutlineClock, activeIcon: HiClock },
     { path: '/events', label: 'Events', icon: HiOutlineClipboardList, activeIcon: HiClipboardList },
     { path: '/profile', label: 'Profile', icon: HiOutlineUser, activeIcon: HiUser },
   ];

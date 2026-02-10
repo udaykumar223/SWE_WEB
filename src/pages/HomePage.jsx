@@ -18,6 +18,7 @@ import {
 import './HomePage.css';
 import { useNavigate } from 'react-router-dom';
 import AddEventModal from '../components/AddEventModal';
+import EventDetailsModal from '../components/EventDetailsModal';
 import { eventService } from '../services/eventService';
 
 const HomePage = () => {
@@ -27,6 +28,10 @@ const HomePage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalType, setModalType] = useState('class');
     const [dayStats, setDayStats] = useState({});
+
+    // Details Modal
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 60000);
@@ -74,8 +79,8 @@ const HomePage = () => {
 
                 // Top 3 upcoming events for today
                 const upcoming = events
-                    .filter(e => new Date(e.startDate) > new Date())
-                    .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+                    .filter(e => new Date(e.startTime) > new Date())
+                    .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
                     .slice(0, 3);
                 setUpcomingEvents(upcoming);
             }
@@ -178,13 +183,16 @@ const HomePage = () => {
                 {upcomingEvents.length > 0 ? (
                     <div className="upcoming-events-list">
                         {upcomingEvents.map(event => (
-                            <div key={event._id} className="event-card-home card">
+                            <div key={event._id} className="event-card-home card" onClick={() => {
+                                setSelectedEvent(event);
+                                setIsDetailsOpen(true);
+                            }} style={{ cursor: 'pointer' }}>
                                 <div className={`event-type-indicator ${event.type}`} />
                                 <div className="event-info-home">
                                     <h4>{event.title}</h4>
                                     <div className="event-meta-home">
                                         <HiOutlineClock />
-                                        <span>{new Date(event.startDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                        <span>{new Date(event.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                     </div>
                                 </div>
                             </div>
@@ -255,8 +263,8 @@ const HomePage = () => {
                                 });
 
                                 const upcoming = events
-                                    .filter(e => new Date(e.startDate) > new Date())
-                                    .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+                                    .filter(e => new Date(e.startTime) > new Date())
+                                    .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
                                     .slice(0, 3);
                                 setUpcomingEvents(upcoming);
                             }
@@ -277,6 +285,12 @@ const HomePage = () => {
                     };
                     fetchStats();
                 }}
+            />
+
+            <EventDetailsModal
+                isOpen={isDetailsOpen}
+                onClose={() => setIsDetailsOpen(false)}
+                event={selectedEvent}
             />
         </div>
     );

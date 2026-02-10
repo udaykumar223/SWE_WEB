@@ -10,50 +10,41 @@
 
 .events-header {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     position: relative;
     padding: 10px 0;
 }
 
-
 .page-title {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 700;
     color: var(--text-primary);
 }
 
-.header-action {
-    position: absolute;
-    right: 0;
-}
-
-
 .filter-scroll {
     overflow-x: auto;
     scrollbar-width: none;
-    /* Firefox */
+    padding-bottom: 4px;
 }
 
 .filter-scroll::-webkit-scrollbar {
     display: none;
-    /* Chrome/Safari */
 }
 
 .filter-chips {
     display: flex;
     gap: 12px;
-    padding: 4px;
 }
 
 .chip {
     padding: 8px 16px;
-    border-radius: 8px;
+    border-radius: 20px;
     border: 1px solid var(--border-color);
     background: var(--bg-surface);
     color: var(--text-secondary);
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 600;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -63,24 +54,239 @@
 }
 
 .chip.active {
-    background: var(--secondary-teal);
-    color: white;
-    border-color: var(--secondary-teal);
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    border-color: var(--text-primary);
 }
 
 .chip-icon {
     font-size: 16px;
 }
 
-/* Empty Events Section */
 .events-main-area {
     flex: 1;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 100px 0;
+    flex-direction: column;
+    gap: 16px;
+    padding-bottom: 200px;
+    /* Space for FAB and Nav */
 }
 
+/* Premium Event Card Styling */
+.events-list-page {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.event-card-premium {
+    background: var(--bg-surface);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    /* Stack on mobile, row on desktop if needed */
+    gap: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s;
+}
+
+/* Desktop styles for wider screens */
+@media (min-width: 768px) {
+    .event-card-premium {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.event-card-left {
+    display: flex;
+    gap: 16px;
+    flex: 1;
+}
+
+.event-time-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    text-align: center;
+}
+
+.event-time-start {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.event-time-date {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.vertical-divider {
+    width: 1px;
+    background: var(--border-color);
+    height: auto;
+}
+
+.event-info-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+}
+
+.event-header-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+}
+
+.event-type-badge {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* Badge Colors */
+.event-type-badge.class {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--class-blue);
+}
+
+.event-type-badge.exam {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--exam-orange);
+}
+
+.event-type-badge.assignment {
+    background: rgba(139, 92, 246, 0.1);
+    color: var(--assignment-purple);
+}
+
+.event-type-badge.meeting {
+    background: rgba(20, 184, 166, 0.1);
+    color: var(--meeting-teal);
+}
+
+.event-type-badge.personal {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--personal-green);
+}
+
+.event-location-badge {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    background: var(--bg-primary);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.delete-btn-icon {
+    margin-left: auto;
+    /* Push to right */
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.delete-btn-icon:hover {
+    color: var(--error-red);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.event-title-premium {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.event-notes-truncate {
+    font-size: 13px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+/* Right Side - Attendance Actions */
+.event-card-right {
+    display: flex;
+    align-items: center;
+}
+
+.attendance-actions {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.btn-attend {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.btn-attend.present {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success-green);
+    border: 1px solid transparent;
+}
+
+.btn-attend.present:hover {
+    background: var(--success-green);
+    color: white;
+}
+
+.btn-attend.absent {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--error-red);
+    border: 1px solid transparent;
+}
+
+.btn-attend.absent:hover {
+    background: var(--error-red);
+    color: white;
+}
+
+.btn-attend.cancelled {
+    background: rgba(107, 114, 128, 0.1);
+    color: var(--text-secondary);
+    border: 1px solid transparent;
+}
+
+.btn-attend.cancelled:hover {
+    background: var(--text-secondary);
+    color: white;
+}
+
+
+/* Empty Events Section */
 .empty-events-state {
     display: flex;
     flex-direction: column;
@@ -155,66 +361,4 @@
 
 .fab-web svg {
     font-size: 22px;
-}
-
-.events-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.event-card {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 16px;
-}
-
-.event-icon-box {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-}
-
-.event-details {
-    flex: 1;
-}
-
-.event-details h4 {
-    font-size: 16px;
-    margin-bottom: 4px;
-    color: var(--text-primary);
-}
-
-.event-meta {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-}
-
-.event-type {
-    font-weight: 600;
-}
-
-.dot {
-    color: var(--text-tertiary);
-}
-
-.event-time {
-    color: var(--text-secondary);
-}
-
-.event-status {
-    padding: 8px;
-}
-
-.status-icon {
-    font-size: 24px;
-    color: var(--text-tertiary);
-    opacity: 0.3;
 }
