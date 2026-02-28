@@ -1,0 +1,386 @@
+.studyplan-content {
+    padding: 20px 20px 100px 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Header */
+.studyplan-header {
+    padding: 10px 0;
+}
+
+.studyplan-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-icon {
+    color: var(--accent-purple);
+    font-size: 28px;
+}
+
+.studyplan-header p {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+}
+
+/* Controls */
+.studyplan-controls {
+    padding: 20px;
+}
+
+.controls-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.date-input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 200px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+.input-icon {
+    font-size: 20px;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+}
+
+.date-input {
+    border: none;
+    background: transparent;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    outline: none;
+    width: 100%;
+    font-family: inherit;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(0.4);
+}
+
+[data-theme='dark'] .date-input::-webkit-calendar-picker-indicator {
+    filter: invert(0.7);
+}
+
+/* Generate Button */
+.generate-btn {
+    background: linear-gradient(135deg, var(--accent-purple), var(--primary-blue));
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
+    white-space: nowrap;
+}
+
+.generate-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45);
+}
+
+.generate-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.generate-btn svg {
+    font-size: 18px;
+}
+
+/* Spinner */
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2.5px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Error */
+.studyplan-error {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: var(--error-red);
+    padding: 16px 20px;
+    border-radius: 12px;
+}
+
+.studyplan-error p {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Loading */
+.studyplan-loading {
+    display: flex;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+.ai-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.pulse-icon {
+    font-size: 48px;
+    color: var(--accent-purple);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.15); opacity: 1; }
+}
+
+.ai-loader p {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Summary Card */
+.summary-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 20px;
+    background: rgba(139, 92, 246, 0.06);
+    border: 1px solid rgba(139, 92, 246, 0.15);
+}
+
+.summary-icon {
+    font-size: 22px;
+    color: var(--accent-purple);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.summary-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Timeline */
+.timeline-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-left: 4px;
+}
+
+.timeline-item {
+    display: flex;
+    gap: 16px;
+    position: relative;
+}
+
+.timeline-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 20px;
+    padding-top: 18px;
+}
+
+.marker-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    z-index: 1;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 4px var(--bg-primary);
+}
+
+.marker-line {
+    width: 2px;
+    flex: 1;
+    background: var(--border-color);
+    min-height: 20px;
+}
+
+.timeline-card {
+    flex: 1;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.timeline-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Session Header */
+.session-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.session-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.session-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.session-info h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.session-type-badge {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 2px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+}
+
+.session-time {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.session-time svg {
+    font-size: 16px;
+    color: var(--text-tertiary);
+}
+
+/* Session Note */
+.session-note {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--text-tertiary);
+    line-height: 1.5;
+    padding-left: 34px;
+    font-style: italic;
+}
+
+/* Empty State */
+.studyplan-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    gap: 12px;
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 56px;
+    color: var(--accent-purple);
+    opacity: 0.5;
+}
+
+.studyplan-empty h4 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.studyplan-empty p {
+    color: var(--text-tertiary);
+    font-size: 14px;
+    max-width: 400px;
+    line-height: 1.6;
+}
+
+/* Dark mode refinements */
+[data-theme='dark'] .studyplan-controls {
+    background: var(--bg-surface);
+}
+
+[data-theme='dark'] .summary-card {
+    background: rgba(139, 92, 246, 0.1);
+}
+
+[data-theme='dark'] .timeline-card {
+    background: var(--bg-surface) !important;
+}
+
+[data-theme='dark'] .studyplan-error {
+    background: rgba(239, 68, 68, 0.12);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .controls-row {
+        flex-direction: column;
+    }
+
+    .date-input-group {
+        width: 100%;
+    }
+
+    .generate-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .session-header {
+        flex-wrap: wrap;
+    }
+
+    .session-time {
+        width: 100%;
+        padding-left: 34px;
+    }
+}
