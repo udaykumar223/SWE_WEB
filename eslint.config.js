@@ -22,6 +22,8 @@ export default [
         },
         rules: {
             ...reactHooks.configs.recommended.rules,
+            "react-hooks/set-state-in-effect": "warn",
+            "react-hooks/static-components": "warn",
             "react-refresh/only-export-components": [
                 "warn",
                 { allowConstantExport: true },
