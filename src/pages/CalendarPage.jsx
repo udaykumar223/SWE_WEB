@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { HiPlus, HiOutlineViewGrid, HiOutlineCalendar } from 'react-icons/hi';
@@ -17,11 +17,7 @@ const CalendarPage = () => {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
-    useEffect(() => {
-        fetchEvents();
-    }, [date]);
-
-    const fetchEvents = async () => {
+    const fetchEvents = useCallback(async () => {
         setLoading(true);
         try {
             const response = await eventService.getEventsByDay(date);
@@ -33,7 +29,11 @@ const CalendarPage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [date]);
+
+    useEffect(() => {
+        fetchEvents();
+    }, [fetchEvents]);
 
     return (
         <div className="calendar-content fade-in">

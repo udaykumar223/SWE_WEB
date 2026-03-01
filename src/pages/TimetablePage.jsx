@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { HiOutlineChevronLeft, HiPlus, HiOutlineClock, HiOutlineLocationMarker } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { timetableService } from '../services/timetableService';
@@ -14,11 +14,7 @@ const TimetablePage = () => {
     const [loading, setLoading] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-    useEffect(() => {
-        fetchTimetable();
-    }, [selectedDayIndex]);
-
-    const fetchTimetable = async () => {
+    const fetchTimetable = useCallback(async () => {
         setLoading(true);
         try {
             const response = await timetableService.getTimetable();
@@ -56,7 +52,11 @@ const TimetablePage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [selectedDayIndex]);
+
+    useEffect(() => {
+        fetchTimetable();
+    }, [fetchTimetable]);
 
     return (
         <div className="timetable-content fade-in">
