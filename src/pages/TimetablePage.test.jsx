@@ -18,7 +18,7 @@ describe('TimetablePage', () => {
 
     it('renders and fetches timetable entries', async () => {
         const mockEntries = [
-            { _id: '1', courseName: 'Test Subject', daysOfWeek: [new Date().getDay()], startTime: '09:00', endTime: '10:00' }
+            { _id: '1', courseName: 'Test Subject', daysOfWeek: [new Date().getDay() === 0 ? 7 : new Date().getDay()], startTime: '09:00', endTime: '10:00' }
         ];
         timetableService.getTimetable.mockResolvedValue({ success: true, data: mockEntries });
 
