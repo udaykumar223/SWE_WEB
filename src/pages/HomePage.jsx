@@ -13,13 +13,17 @@ import {
     HiOutlineClock,
     HiOutlineBookOpen,
     HiOutlineEmojiHappy,
-    HiOutlineQuestionMarkCircle
+    HiOutlineQuestionMarkCircle,
+    HiOutlineExclamation,
+    HiOutlineFire,
+    HiX
 } from 'react-icons/hi';
 import './HomePage.css';
 import { useNavigate } from 'react-router-dom';
 import AddEventModal from '../components/AddEventModal';
 import EventDetailsModal from '../components/EventDetailsModal';
 import { eventService } from '../services/eventService';
+import { aiService } from '../services/aiService';
 
 const HomePage = () => {
     const { user } = useAuth();
@@ -33,9 +37,35 @@ const HomePage = () => {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
+    // Wellness alerts state
+    const [procrastinationAlert, setProcrastinationAlert] = useState(null);
+    const [burnoutAlert, setBurnoutAlert] = useState(null);
+    const [dismissedAlerts, setDismissedAlerts] = useState({});
+
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 60000);
         return () => clearInterval(timer);
+    }, []);
+
+    // Fetch wellness data on mount
+    useEffect(() => {
+        const fetchWellness = async () => {
+            try {
+                const [procData, burnData] = await Promise.all([
+                    aiService.getProcrastinationAnalysis().catch(() => null),
+                    aiService.getBurnoutAnalysis().catch(() => null)
+                ]);
+                if (procData && procData.warning && procData.warning !== 'OK') {
+                    setProcrastinationAlert(procData);
+                }
+                if (burnData && burnData.burnoutRisk) {
+                    setBurnoutAlert(burnData);
+                }
+            } catch (err) {
+                console.error('Wellness fetch failed:', err);
+            }
+        };
+        fetchWellness();
     }, []);
 
 
@@ -136,6 +166,84 @@ const HomePage = () => {
 
     return (
         <div className="home-content fade-in">
+            {/* Wellness Alerts */}
+            {procrastinationAlert && !dismissedAlerts.procrastination && (
+                <div className="wellness-alert wellness-alert-warning">
+                    <div className="alert-icon-wrap">
+                        <HiOutlineExclamation />
+                    </div>
+                    <div className="alert-body">
+                        <strong>Procrastination Detected</strong>
+                        <p className="alert-reason">{procrastinationAlert.warning}</p>
+                        <div className="alert-details">
+                            <div className="alert-stat-row">
+                                <div className="alert-stat">
+                                    <span className="alert-stat-value">{procrastinationAlert.procrastinationScore}</span>
+                                    <span className="alert-stat-label">Procrastination Score</span>
+                                </div>
+                                <div className="alert-stat">
+                                    <span className="alert-stat-value">{procrastinationAlert.missedDeadlines}</span>
+                                    <span className="alert-stat-label">Missed Deadlines</span>
+                                </div>
+                                <div className="alert-stat">
+                                    <span className="alert-stat-value">{procrastinationAlert.rushingTasks}</span>
+                                    <span className="alert-stat-label">Rushing Tasks</span>
+                                </div>
+                                <div className="alert-stat">
+                                    <span className="alert-stat-value">{procrastinationAlert.totalTasks}</span>
+                                    <span className="alert-stat-label">Total Tasks Tracked</span>
+                                </div>
+                            </div>
+                            <div className="alert-explain">
+                                <p><strong>How is this detected?</strong></p>
+                                <ul>
+                                    <li><strong>Missed Deadlines:</strong> Assignments/exams that passed their due date but are still incomplete.</li>
+                                    <li><strong>Rushing Tasks:</strong> Tasks where over 80% of the time between creation and deadline has passed, and the task is still not done — a sign of "last minute" behavior.</li>
+                                </ul>
+                                <p className="alert-tip">💡 <strong>Tip:</strong> Start your assignments early! Break big tasks into smaller sub-tasks and tackle them across multiple days.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button className="alert-dismiss" onClick={() => setDismissedAlerts(prev => ({ ...prev, procrastination: true }))}>
+                        <HiX />
+                    </button>
+                </div>
+            )}
+            {burnoutAlert && !dismissedAlerts.burnout && (
+                <div className="wellness-alert wellness-alert-danger">
+                    <div className="alert-icon-wrap">
+                        <HiOutlineFire />
+                    </div>
+                    <div className="alert-body">
+                        <strong>Burnout Risk Detected</strong>
+                        <p className="alert-reason">You've been consistently overloaded. Take a step back and prioritize rest.</p>
+                        <div className="alert-details">
+                            <div className="alert-stat-row">
+                                <div className="alert-stat">
+                                    <span className="alert-stat-value">{burnoutAlert.averageDailyWorkload} min</span>
+                                    <span className="alert-stat-label">Avg Daily Workload</span>
+                                </div>
+                                <div className="alert-stat">
+                                    <span className="alert-stat-value">{burnoutAlert.overloadDays}</span>
+                                    <span className="alert-stat-label">Overloaded Days (of 7)</span>
+                                </div>
+                            </div>
+                            <div className="alert-explain">
+                                <p><strong>How is this detected?</strong></p>
+                                <ul>
+                                    <li><strong>Daily Threshold:</strong> Any day where your total task workload exceeds <strong>8 hours (480 minutes)</strong> is flagged as an overloaded day.</li>
+                                    <li><strong>Burnout Trigger:</strong> If half or more of the last 7 days were overloaded, you're at risk of burnout.</li>
+                                </ul>
+                                <p className="alert-tip">💡 <strong>Tip:</strong> Use the AI Study Planner to spread your tasks more evenly, and schedule breaks between study sessions.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button className="alert-dismiss" onClick={() => setDismissedAlerts(prev => ({ ...prev, burnout: true }))}>
+                        <HiX />
+                    </button>
+                </div>
+            )}
+
             {/* Header */}
             <header className="home-header">
                 <div className="header-text">

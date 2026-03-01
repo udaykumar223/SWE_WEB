@@ -14,6 +14,7 @@ import TimetablePage from './pages/TimetablePage';
 import AttendancePage from './pages/AttendancePage';
 import ProfilePage from './pages/ProfilePage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import StudyPlanPage from './pages/StudyPlanPage';
 
 // Icons
 import {
@@ -22,7 +23,8 @@ import {
   HiCollection, HiOutlineCollection,
   HiClipboardList, HiOutlineClipboardList,
   HiUser, HiOutlineUser,
-  HiClock, HiOutlineClock
+  HiClock, HiOutlineClock,
+  HiOutlineSparkles, HiSparkles
 } from 'react-icons/hi';
 
 const Navigation = () => {
@@ -35,6 +37,7 @@ const Navigation = () => {
   const navItems = [
     { path: '/', label: 'Home', icon: HiOutlineHome, activeIcon: HiHome },
     { path: '/calendar', label: 'Calendar', icon: HiOutlineCalendar, activeIcon: HiCalendar },
+    { path: '/study-plan', label: 'AI Plan', icon: HiOutlineSparkles, activeIcon: HiSparkles },
     { path: '/timetable', label: 'Timetable', icon: HiOutlineClock, activeIcon: HiClock },
     { path: '/events', label: 'Events', icon: HiOutlineClipboardList, activeIcon: HiClipboardList },
     { path: '/profile', label: 'Profile', icon: HiOutlineUser, activeIcon: HiUser },
@@ -91,6 +94,7 @@ function App() {
                 <Route path="/timetable" element={<ProtectedRoute><TimetablePage /></ProtectedRoute>} />
                 <Route path="/attendance" element={<ProtectedRoute><AttendancePage /></ProtectedRoute>} />
                 <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+                <Route path="/study-plan" element={<ProtectedRoute><StudyPlanPage /></ProtectedRoute>} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
               <Footer />
