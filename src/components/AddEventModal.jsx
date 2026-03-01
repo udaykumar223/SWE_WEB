@@ -29,8 +29,8 @@ const AddEventModal = ({ isOpen, onClose, onEventAdded, initialType = 'class' })
     const [classification, setClassification] = useState(initialType);
     const [title, setTitle] = useState('');
     const [category, setCategory] = useState('No category');
-    const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 16));
-    const [endDate, setEndDate] = useState(new Date(Date.now() + 3600000).toISOString().slice(0, 16));
+    const [startDate, setStartDate] = useState(() => new Date().toISOString().slice(0, 16));
+    const [endDate, setEndDate] = useState(() => new Date(Date.now() + 3600000).toISOString().slice(0, 16));
     const [location, setLocation] = useState('');
     const [notes, setNotes] = useState('');
     const [isCategoryOpen, setIsCategoryOpen] = useState(false);

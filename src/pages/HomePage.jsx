@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import {
     HiOutlineBell,
@@ -93,7 +93,7 @@ const HomePage = () => {
     });
     const [upcomingEvents, setUpcomingEvents] = useState([]);
 
-    const fetchStats = async () => {
+    const fetchStats = useCallback(async () => {
         try {
             // Fetch Today's Stats
             const today = new Date();
@@ -116,24 +116,24 @@ const HomePage = () => {
             }
 
             // Fetch Day Stats (Next 3 Days)
-            const stats = {};
+            const dayStatsObj = {};
             for (let i = 0; i < 3; i++) {
                 const date = new Date();
                 date.setDate(date.getDate() + i);
                 const dateString = date.toISOString().split('T')[0];
                 const response = await eventService.getCountsForDay(date);
-                stats[dateString] = response.data.count;
+                dayStatsObj[dateString] = response.data.count;
             }
-            setDayStats(stats);
+            setDayStats(dayStatsObj);
 
         } catch (error) {
             console.error("Failed to fetch home stats", error);
         }
-    };
+    }, []);
 
     useEffect(() => {
         fetchStats();
-    }, [currentTime]);
+    }, [fetchStats, currentTime]);
 
     const overviewStats = [
         { label: 'Classes', count: stats.classes, icon: HiOutlineAcademicCap, color: 'var(--class-blue)', bg: 'rgba(59, 130, 246, 0.05)' },
